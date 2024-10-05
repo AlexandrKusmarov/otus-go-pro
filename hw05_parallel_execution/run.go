@@ -58,6 +58,7 @@ func Run(tasks []Task, n, m int) error {
 
 	// Ожидаем завершения всех горутин
 	wg.Wait()
+	close(errCh)
 
 	// Проверяем, было ли превышено количество ошибок
 	if atomic.LoadInt64(&errCount) >= int64(m) {
