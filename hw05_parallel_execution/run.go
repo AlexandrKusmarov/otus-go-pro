@@ -28,23 +28,19 @@ func Run(tasks []Task, n, m int) error {
 		go func() {
 			defer wg.Done()
 			for {
-				select {
-				case task, ok := <-taskCh:
-					if !ok {
-						return // Канал закрыт, завершаем воркер
-					}
-					if err := task(); err != nil {
-						incrementErrCountAndGet(&mu, &errCount)
-						mu.Lock()
-						if errCount >= m {
-							errCh <- ErrErrorsLimitExceeded
-							mu.Unlock()
-							return
-						}
+				task, ok := <-taskCh
+				if !ok {
+					return // Канал закрыт, завершаем воркер
+				}
+				if err := task(); err != nil {
+					incrementErrCountAndGet(&mu, &errCount)
+					mu.Lock()
+					if errCount >= m {
+						errCh <- ErrErrorsLimitExceeded
 						mu.Unlock()
+						return
 					}
-				case <-errCh:
-					return // Если лимит ошибок достигнут, выходим
+					mu.Unlock()
 				}
 			}
 		}()
