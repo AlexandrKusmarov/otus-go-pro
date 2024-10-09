@@ -3,7 +3,6 @@ package hw05parallelexecution
 import (
 	"errors"
 	"sync"
-	"sync/atomic"
 )
 
 var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
@@ -17,51 +16,65 @@ func Run(tasks []Task, n, m int) error {
 		return ErrErrorsLimitExceeded
 	}
 
+	taskCh := make(chan func() error) // Канал для отправки задач
+	errCh := make(chan error, n)      // Буферизированный канал для ошибок
 	var wg sync.WaitGroup
-	var errCount int64
-	taskCh := make(chan Task, len(tasks))
-	errCh := make(chan error, m)
+	var errCount int
+	var mu sync.Mutex
 
-	// Инициализируем канал с задачами, наполнив его списком переданных задач
-	go func() {
-		defer close(taskCh)
-		for _, task := range tasks {
-			taskCh <- task
-		}
-	}()
-
-	// Создаем n параллельных горутин для выполнения задач
-	// Внутрь каждой горутины передаем задачи из канала задач,
-	// где так же выполняется проверка на переполнение допустимого количества ошибок
+	// Запуск n воркеров
 	for i := 0; i < n; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			for task := range taskCh {
-				if task == nil {
-					continue
-				}
-				if err := task(); err != nil {
-					// Селект нужен для потокобезопасной работы с каналом, блокирующая операция.
-					select {
-					// Если не удалось записать в канал - будет выполнен блок default. Это защита от deadlock.
-					case errCh <- err:
-					default:
+			for {
+				select {
+				case task, ok := <-taskCh:
+					if !ok {
+						return // Канал закрыт, завершаем воркер
 					}
-					if atomic.AddInt64(&errCount, 1) >= int64(m) {
-						return
+					if err := task(); err != nil {
+						incrementErrCountAndGet(&mu, &errCount)
+						if errCount >= m {
+							errCh <- ErrErrorsLimitExceeded
+							return
+						}
 					}
+				case <-errCh:
+					return // Если лимит ошибок достигнут, выходим
 				}
 			}
 		}()
 	}
 
-	// Ожидаем завершения всех горутин
+	// Заполняем задачи
+	go func() {
+		defer close(taskCh)
+		for _, task := range tasks {
+			select {
+			case taskCh <- task:
+			case <-errCh:
+				return // Прекращаем отправку задач, если лимит ошибок превышен
+			}
+		}
+	}()
+
+	// Ожидаем завершения всех воркеров
 	wg.Wait()
 	close(errCh)
 
-	// Проверяем, было ли превышено количество ошибок
-	if atomic.LoadInt64(&errCount) >= int64(m) {
+	return checkErr(errCount, m)
+}
+
+func incrementErrCountAndGet(mu *sync.Mutex, errCount *int) {
+	defer mu.Unlock()
+	mu.Lock()
+	*errCount++
+}
+
+func checkErr(errCount, m int) error {
+	// Если было больше ошибок, возвращаем ошибку
+	if errCount >= m {
 		return ErrErrorsLimitExceeded
 	}
 
