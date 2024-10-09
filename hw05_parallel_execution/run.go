@@ -35,10 +35,13 @@ func Run(tasks []Task, n, m int) error {
 					}
 					if err := task(); err != nil {
 						incrementErrCountAndGet(&mu, &errCount)
+						mu.Lock()
 						if errCount >= m {
 							errCh <- ErrErrorsLimitExceeded
+							mu.Unlock()
 							return
 						}
+						mu.Unlock()
 					}
 				case <-errCh:
 					return // Если лимит ошибок достигнут, выходим
