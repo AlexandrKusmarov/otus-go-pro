@@ -10,7 +10,7 @@ type Stage func(in In) (out Out)
 
 func ExecutePipeline(in In, done In, stages ...Stage) Out {
 	for _, stage := range stages {
-		in = stage(forwarder(in, done))
+		in = forwarder(stage(in), done)
 	}
 	return in
 }
