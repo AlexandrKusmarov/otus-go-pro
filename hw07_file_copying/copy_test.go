@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"testing"
@@ -93,12 +92,20 @@ func TestCopy(t *testing.T) {
 			expectedError:    ErrOffsetExceedsFileSize,
 			expectedFilePath: "",
 		},
+		{
+			name:             "input_equals_output_filename",
+			fromPath:         "testdata/out.txt",
+			toPath:           "testdata/out.txt",
+			offset:           600000,
+			limit:            100000,
+			expectedError:    ErrUnsupportedFile,
+			expectedFilePath: "",
+		},
 	}
-
-	fmt.Println(os.Getwd())
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			defer os.Remove(tc.toPath)
 			err := Copy(tc.fromPath, tc.toPath, tc.offset, tc.limit)
 			if !errors.Is(err, tc.expectedError) {
 				t.Errorf("Expected error %v, got %v", tc.expectedError, err)
@@ -112,7 +119,6 @@ func TestCopy(t *testing.T) {
 				if !bytes.Equal(actualContent, expectedContent) {
 					t.Errorf("Expected output file content %s, got %s", actualContent, expectedContent)
 				}
-				os.Remove(tc.toPath)
 			}
 		})
 	}

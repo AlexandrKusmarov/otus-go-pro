@@ -15,6 +15,14 @@ var (
 )
 
 func Copy(fromPath string, toPath string, offset, limit int64) error {
+	if fromPath == toPath {
+		return ErrUnsupportedFile
+	}
+	special, err := isSpecialFile(fromPath)
+	if err != nil || special {
+		return ErrUnsupportedFile
+	}
+
 	fromFile, err := os.Open(fromPath)
 	if err != nil {
 		return ErrUnsupportedFile
@@ -102,4 +110,19 @@ func limitCorrector(f *os.File, limit *int64, offset *int64) error {
 	_, err = f.Seek(0, 0)
 
 	return err
+}
+
+func isSpecialFile(path string) (bool, error) {
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+
+	// Проверяем, является ли файл устройством (char или block device)
+	mode := fileInfo.Mode()
+	if mode&os.ModeCharDevice != 0 || mode&os.ModeDevice != 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
