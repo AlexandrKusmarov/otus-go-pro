@@ -7,11 +7,9 @@ import (
 	"io"
 	"os"
 	"testing"
-	"time"
 )
 
 func TestCopy(t *testing.T) {
-
 	type test struct {
 		name             string
 		fromPath         string
@@ -83,7 +81,7 @@ func TestCopy(t *testing.T) {
 			toPath:           "out.txt",
 			offset:           6000,
 			limit:            1000,
-			expectedError:    io.EOF,
+			expectedError:    nil,
 			expectedFilePath: "testdata/out_offset6000_limit1000.txt",
 		},
 		{
@@ -105,24 +103,12 @@ func TestCopy(t *testing.T) {
 			if !errors.Is(err, tc.expectedError) {
 				t.Errorf("Expected error %v, got %v", tc.expectedError, err)
 			}
-			if tc.expectedError == io.EOF {
+			if errors.Is(tc.expectedError, io.EOF) {
 				// Read actual file content
-				actualFile, err := os.Open(tc.toPath)
-				actualFileInfo, err := actualFile.Stat()
-				actualContent := make([]byte, actualFileInfo.Size())
-				_, err = actualFile.Read(actualContent)
-
-				time.Sleep(2 * time.Second)
+				actualContent := readData(t, tc.toPath)
 
 				// Read expected file content
-				expectedFile, err := os.Open(tc.expectedFilePath)
-				expectedFileInfo, err := expectedFile.Stat()
-				expectedContent := make([]byte, expectedFileInfo.Size())
-				_, err = expectedFile.Read(expectedContent)
-
-				if err != nil {
-					t.Fatalf("Failed to read output file: %v", err)
-				}
+				expectedContent := readData(t, tc.expectedFilePath)
 				if !bytes.Equal(actualContent, expectedContent) {
 					t.Errorf("Expected output file content %s, got %s", actualContent, expectedContent)
 				}
@@ -130,4 +116,24 @@ func TestCopy(t *testing.T) {
 			}
 		})
 	}
+}
+
+func readData(t *testing.T, path string) []byte {
+	t.Helper()
+	actualFile, err := os.Open(path)
+	if err != nil {
+		t.Fatalf("Failed to open file: %v", err)
+	}
+
+	actualFileInfo, err := actualFile.Stat()
+	if err != nil {
+		t.Fatalf("Failed to stat file: %v", err)
+	}
+
+	actualContent := make([]byte, actualFileInfo.Size())
+	_, err = actualFile.Read(actualContent)
+	if err != nil {
+		t.Fatalf("Failed to read file: %v", err)
+	}
+	return actualContent
 }

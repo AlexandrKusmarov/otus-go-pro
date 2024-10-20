@@ -65,41 +65,41 @@ func Copy(fromPath string, toPath string, offset, limit int64) error {
 }
 
 func limitCorrector(f *os.File, limit *int64, offset *int64) error {
+	reader := bufio.NewReader(f)
+	countR := int64(0)
+	curOffset := int64(0)
+	curLimit := int64(0)
 	var err error
 
 	// Подсчет и коррекция /r до оффсета
-	*offset, err = correctParam(f, offset)
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Seek(*offset, 0)
-	// Подсчет и коррекция /r до лимита
-	*limit, err = correctParam(f, limit)
-	if err != nil {
-		return err
-	}
-
-	return err
-}
-
-func correctParam(f *os.File, param *int64) (int64, error) {
-	var countR int64 = 0
-	var curParam int64 = 0
-	reader := bufio.NewReader(f)
-
-	// Подсчет и коррекция /r до лимита
-	for curParam < *param+countR {
+	for curOffset < *offset+countR {
 		b, err := reader.ReadByte()
 		if err != nil {
-			return 0, err
+			break
 		}
-		curParam++
+		curOffset++
 		if b == '\r' {
 			countR++
 		}
 	}
-	_, err := f.Seek(0, 0)
 
-	return curParam, err
+	*offset = curOffset
+	countR = 0
+
+	// Подсчет и коррекция /r до лимита
+	for curLimit < *limit+countR {
+		b, err := reader.ReadByte()
+		if err != nil {
+			break
+		}
+		curLimit++
+		if b == '\r' {
+			countR++
+		}
+	}
+	*limit = curLimit
+
+	_, err = f.Seek(0, 0)
+
+	return err
 }
