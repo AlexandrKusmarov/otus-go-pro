@@ -2,10 +2,11 @@ package main
 
 import (
 	"errors"
-	"github.com/schollz/progressbar/v3"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 var (
