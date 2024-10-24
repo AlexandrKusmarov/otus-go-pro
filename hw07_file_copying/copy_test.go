@@ -94,8 +94,8 @@ func TestCopy(t *testing.T) {
 		},
 		{
 			name:             "input_equals_output_filename",
-			fromPath:         "testdata/input.txt",
-			toPath:           "testdata/input.txt",
+			fromPath:         "testdata/out.txt",
+			toPath:           "testdata/out.txt",
 			offset:           600000,
 			limit:            100000,
 			expectedError:    ErrUnsupportedFile,

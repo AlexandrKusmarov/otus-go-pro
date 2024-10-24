@@ -14,9 +14,10 @@ var (
 )
 
 func Copy(fromPath string, toPath string, offset, limit int64) error {
-	if filepath.Abs(fromPath) == filepath.Abs(toPath) {
-		return ErrUnsupportedFile
+	if err := checkFilePath(fromPath, toPath); err != nil {
+		return err
 	}
+
 	special, err := isSpecialFile(fromPath)
 	if err != nil || special {
 		return ErrUnsupportedFile
@@ -79,4 +80,20 @@ func isSpecialFile(path string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func checkFilePath(fromPath string, toPath string) error {
+	abs1, err := filepath.Abs(fromPath)
+	if err != nil {
+		return ErrUnsupportedFile
+	}
+	abs2, err := filepath.Abs(toPath)
+	if err != nil {
+		return ErrUnsupportedFile
+	}
+
+	if abs1 == abs2 {
+		return ErrUnsupportedFile
+	}
+	return nil
 }
