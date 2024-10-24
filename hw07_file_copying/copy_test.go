@@ -80,7 +80,7 @@ func TestCopy(t *testing.T) {
 			toPath:           "out.txt",
 			offset:           6000,
 			limit:            1000,
-			expectedError:    nil,
+			expectedError:    io.EOF,
 			expectedFilePath: "testdata/out_offset6000_limit1000.txt",
 		},
 		{
