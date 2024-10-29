@@ -23,10 +23,7 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 			fmt.Fprintf(os.Stderr, "error delete environment: %v\n", err)
 		}
 		if !v.NeedRemove {
-			err := os.Setenv(k, v.Value)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "error setting environment: %v\n", err)
-			}
+			com.Env = append(os.Environ(), fmt.Sprintf("%s=%s", k, v.Value))
 		}
 	}
 

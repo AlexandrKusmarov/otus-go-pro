@@ -28,26 +28,46 @@ func ReadDir(dir string) (Environment, error) {
 		if file.IsDir() {
 			continue
 		}
-		envVal := EnvValue{
-			Value:      "",
-			NeedRemove: true,
-		}
+
 		if strings.Contains(file.Name(), "=") {
 			return nil, errors.New("error: file name contains '='")
 		}
-		fData, err := os.ReadFile(filepath.Join(dir, file.Name()))
+		envVal, err := ReadlineFromFile(filepath.Join(dir, file.Name()))
 		if err != nil {
 			return nil, err
 		}
-		envVal.NeedRemove = len(fData) == 0
-		scanner := bufio.NewScanner(strings.NewReader(string(fData)))
-		if scanner.Scan() {
-			envVal.Value = scanner.Text()
-			envVal.Value = strings.TrimRight(envVal.Value, " \t")
-			envVal.Value = strings.ReplaceAll(envVal.Value, "\x00", "\n")
-		}
 		env[file.Name()] = envVal
 	}
-
 	return env, nil
+}
+
+func ReadlineFromFile(filename string) (EnvValue, error) {
+	envVal := EnvValue{
+		Value:      "",
+		NeedRemove: true,
+	}
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return envVal, err
+	}
+	defer file.Close()
+
+	info, err := file.Stat()
+	if err != nil {
+		return envVal, err
+	}
+
+	envVal.NeedRemove = info.Size() == int64(0)
+
+	// Создаем новый Scanner
+	scanner := bufio.NewScanner(file)
+
+	if scanner.Scan() {
+		envVal.Value = scanner.Text()
+		envVal.Value = strings.TrimRight(envVal.Value, " \t")
+		envVal.Value = strings.ReplaceAll(envVal.Value, "\x00", "\n")
+	}
+
+	return envVal, nil
 }
