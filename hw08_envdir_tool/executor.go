@@ -17,13 +17,14 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 	com := exec.Command(cmd[0], cmd[1:]...) //nolint:gosec
 
 	// Установить переменные окружения
+	com.Env = os.Environ()
 	for k, v := range env {
 		err := os.Unsetenv(k)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error delete environment: %v\n", err)
 		}
 		if !v.NeedRemove {
-			com.Env = append(os.Environ(), fmt.Sprintf("%s=%s", k, v.Value))
+			com.Env = append(com.Env, fmt.Sprintf("%s=%s", k, v.Value))
 		}
 	}
 
