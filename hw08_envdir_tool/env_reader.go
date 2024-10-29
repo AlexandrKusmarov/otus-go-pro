@@ -3,8 +3,10 @@ package main
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -60,6 +62,7 @@ func ReadlineFromFile(filename string) (EnvValue, error) {
 
 	envVal.NeedRemove = info.Size() == int64(0)
 
+	fmt.Println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " + strconv.FormatInt(info.Size(), 10) + "~~~~~~~~ " + strconv.FormatBool(envVal.NeedRemove))
 	// Создаем новый Scanner
 	scanner := bufio.NewScanner(file)
 
