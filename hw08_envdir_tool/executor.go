@@ -19,13 +19,7 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 	// Установить переменные окружения
 	com.Env = os.Environ()
 	for k, v := range env {
-		err := os.Unsetenv(k)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "error delete environment: %v\n", err)
-		}
-		if !v.NeedRemove {
-			com.Env = append(com.Env, fmt.Sprintf("%s=%s", k, v.Value))
-		}
+		com.Env = append(com.Env, fmt.Sprintf("%s=%s", k, v.Value))
 	}
 
 	com.Stderr = os.Stderr
