@@ -131,8 +131,8 @@ func validateString(ruleName string, ruleValue string, nameField string,
 	return ValidationError{nameField, nil}, nil
 }
 
-func validateInt(ruleName string, ruleValue string, nameField string,
-	dataIntForValidator int64) (ValidationError, error) {
+func validateInt(ruleName string, ruleValue string, nameField string, dataIntForValidator int64,
+) (ValidationError, error) {
 	switch ruleName {
 	case "min":
 		rv, err := strconv.ParseInt(ruleValue, 10, 64)
