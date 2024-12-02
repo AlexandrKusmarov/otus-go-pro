@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -14,9 +15,17 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Usage: go-telnet host port")
 		os.Exit(1)
 	}
-
-	address := fmt.Sprintf("%s:%s", os.Args[1], os.Args[2])
-	client := NewTelnetClient(address, 10*time.Second, os.Stdin, os.Stdout)
+	var timeout *int64
+	value := int64(10 * time.Second)
+	timeout = &value
+	address := ""
+	if len(os.Args) == 3 { // передан timeout
+		address = fmt.Sprintf("%s:%s", os.Args[1], os.Args[2])
+	} else {
+		address = fmt.Sprintf("%s:%s", os.Args[2], os.Args[3])
+		timeout = flag.Int64("timeout", int64(10*time.Second), "any int")
+	}
+	client := NewTelnetClient(address, time.Duration(*timeout), os.Stdin, os.Stdout)
 
 	if err := client.Connect(); err != nil {
 		fmt.Fprintf(os.Stderr, "Connection error: %v\n", err)
