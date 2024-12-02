@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
 	"syscall"
@@ -39,6 +40,12 @@ func main() {
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
+	// Добавляем горутину для завершения по CTRL+D
+	go func() {
+		io.Copy(io.Discard, os.Stdin) // Блокирует чтение до конца потока
+		cancelFunc()
+	}()
 
 	select {
 	case <-sigCh:
