@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -21,17 +24,27 @@ func main() {
 	}
 	defer client.Close()
 
-	fmt.Fprintf(os.Stderr, "...Connected to %s\n", address)
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	go worker(client.Receive, cancelFunc)
+	go worker(client.Send, cancelFunc)
 
-	go func() {
-		if err := client.Receive(); err != nil {
-			fmt.Fprintf(os.Stderr, "Receive error: %v\n", err)
-			os.Exit(1)
-		}
-	}()
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	if err := client.Send(); err != nil {
-		fmt.Fprintf(os.Stderr, "Send error: %v\n", err)
+	select {
+	case <-sigCh:
+		cancelFunc()
+		signal.Stop(sigCh)
+		return
+
+	case <-ctx.Done():
+		close(sigCh)
+		return
 	}
-	fmt.Fprintln(os.Stderr, "...Connection closed")
+}
+
+func worker(handler func() error, cancelFunc context.CancelFunc) {
+	if err := handler(); err != nil {
+		cancelFunc()
+	}
 }
