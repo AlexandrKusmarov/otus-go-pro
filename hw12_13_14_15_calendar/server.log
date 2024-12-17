@@ -1,0 +1,3 @@
+2024/12/17 20:16:10 127.0.0.1:51360 [17/Dec/2024:20:16:10 +0300] GET /hello HTTP/1.1 200 0 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2024/12/17 20:16:10 127.0.0.1:51360 [17/Dec/2024:20:16:10 +0300] GET /favicon.ico HTTP/1.1 404 0 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2024/12/17 20:49:42 127.0.0.1:63310 [17/Dec/2024:20:49:42 +0300] GET /hello HTTP/1.1 200 0 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
