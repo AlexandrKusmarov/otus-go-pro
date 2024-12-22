@@ -6,12 +6,17 @@ LINTER = golangci-lint
 LINTER_CONFIG = ../.golangci.yml
 
 # Стадии
-.PHONY: all lint install-linter clean
+.PHONY: all lint install-linter clean build
 
 all: lint
 
+# Стадия сборки
+build:
+	@echo "Сборка проекта..."
+	go build ./...
+
 # Стадия lint
-lint: install-linter
+lint: install-linter build
 	@echo "Запуск линтера..."
 	$(LINTER) run $(PKG) --config=$(LINTER_CONFIG)
 
