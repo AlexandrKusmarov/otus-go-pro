@@ -4,9 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
+
 	"github.com/fixme_my_friend/hw12_13_14_15_calendar/configs"
 	"github.com/pressly/goose/v3"
-	"log"
 )
 
 func MigrateData(_ context.Context, config configs.DatabaseConf) error {
