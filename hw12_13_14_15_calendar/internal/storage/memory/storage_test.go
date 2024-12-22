@@ -14,12 +14,12 @@ func TestStorage(t *testing.T) {
 	event1 := &event.Event{ID: 1, Title: "Test Event 1"}
 	storage.AddEvent(event1.ID, event1)
 
-	if e, exists := storage.GetEventById(event1.ID); !exists || e.Title != event1.Title {
+	if e, exists := storage.GetEventByID(event1.ID); !exists || e.Title != event1.Title {
 		t.Errorf("expected to get event %v, got %v", event1, e)
 	}
 
 	// Тестирование получения несуществующего события
-	if _, exists := storage.GetEventById(999); exists {
+	if _, exists := storage.GetEventByID(999); exists {
 		t.Error("expected event not to exist")
 	}
 
@@ -31,7 +31,7 @@ func TestStorage(t *testing.T) {
 
 	// Тестирование удаления события
 	storage.RemoveEvent(event1.ID)
-	if _, exists := storage.GetEventById(event1.ID); exists {
+	if _, exists := storage.GetEventByID(event1.ID); exists {
 		t.Error("expected event to be removed")
 	}
 

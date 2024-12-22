@@ -3,6 +3,7 @@ package sqlstorage
 import (
 	"context"
 	"fmt"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // Импорт PostgreSQL-драйвера
 )
@@ -24,7 +25,7 @@ func (s *Storage) Connect(ctx context.Context, driverName string, dsn string) er
 	return nil
 }
 
-func (s *Storage) Close(ctx context.Context) error {
+func (s *Storage) Close(_ context.Context) error {
 	if s.db == nil {
 		return fmt.Errorf("database connection is not initialized")
 	}
@@ -44,7 +45,7 @@ type Event struct {
 	NotifyBeforeEvent string `db:"notify_before_event"`
 }
 
-// Notification представляет структуру уведомления
+// Notification представляет структуру уведомления.
 type Notification struct {
 	ID            int64  `db:"id"`
 	EventID       int64  `db:"event_id"`
@@ -53,15 +54,16 @@ type Notification struct {
 	UserID        int64  `db:"user_id"`
 }
 
-// CreateEvent добавляет новое событие в базу данных
+// CreateEvent добавляет новое событие в базу данных.
 func (s *Storage) CreateEvent(ctx context.Context, event *Event) error {
-	query := `INSERT INTO public.events (title, event_date_time, event_end_date_time, description, user_id, notify_before_event) 
-              VALUES (:title, :event_date_time, :event_end_date_time, :description, :user_id, :notify_before_event) RETURNING id`
+	query := `INSERT INTO public.events 
+    (title, event_date_time, event_end_date_time, description, user_id, notify_before_event) 
+    VALUES (:title, :event_date_time, :event_end_date_time, :description, :user_id, :notify_before_event) RETURNING id`
 
 	return s.db.GetContext(ctx, &event.ID, query, event)
 }
 
-// GetEvent возвращает событие по его ID
+// GetEvent возвращает событие по его ID.
 func (s *Storage) GetEvent(ctx context.Context, id int64) (*Event, error) {
 	var event Event
 	query := `SELECT * FROM public.events WHERE id = $1`
@@ -72,7 +74,7 @@ func (s *Storage) GetEvent(ctx context.Context, id int64) (*Event, error) {
 	return &event, nil
 }
 
-// UpdateEvent обновляет существующее событие
+// UpdateEvent обновляет существующее событие.
 func (s *Storage) UpdateEvent(ctx context.Context, event *Event) error {
 	query := `UPDATE public.events SET title = :title, event_date_time = :event_date_time, 
               event_end_date_time = :event_end_date_time, description = :description, 
@@ -83,14 +85,14 @@ func (s *Storage) UpdateEvent(ctx context.Context, event *Event) error {
 	return err
 }
 
-// DeleteEvent удаляет событие по его ID
+// DeleteEvent удаляет событие по его ID.
 func (s *Storage) DeleteEvent(ctx context.Context, id int64) error {
 	query := `DELETE FROM public.events WHERE id = $1`
 	_, err := s.db.ExecContext(ctx, query, id)
 	return err
 }
 
-// GetAllEvents возвращает все события
+// GetAllEvents возвращает все события.
 func (s *Storage) GetAllEvents(ctx context.Context) ([]Event, error) {
 	var events []Event
 	query := `SELECT * FROM public.events`
@@ -101,7 +103,7 @@ func (s *Storage) GetAllEvents(ctx context.Context) ([]Event, error) {
 	return events, nil
 }
 
-// CreateNotification добавляет новое уведомление в базу данных
+// CreateNotification добавляет новое уведомление в базу данных.
 func (s *Storage) CreateNotification(ctx context.Context, notification *Notification) error {
 	query := `INSERT INTO public.notification (event_id, title, event_date_time, user_id) 
               VALUES (:event_id, :title, :event_date_time, :user_id) RETURNING id`
@@ -109,7 +111,7 @@ func (s *Storage) CreateNotification(ctx context.Context, notification *Notifica
 	return s.db.GetContext(ctx, &notification.ID, query, notification)
 }
 
-// GetNotification возвращает уведомление по его ID
+// GetNotification возвращает уведомление по его ID.
 func (s *Storage) GetNotification(ctx context.Context, id int64) (*Notification, error) {
 	var notification Notification
 	query := `SELECT * FROM public.notification WHERE id = $1`
@@ -120,7 +122,7 @@ func (s *Storage) GetNotification(ctx context.Context, id int64) (*Notification,
 	return &notification, nil
 }
 
-// UpdateNotification обновляет существующее уведомление
+// UpdateNotification обновляет существующее уведомление.
 func (s *Storage) UpdateNotification(ctx context.Context, notification *Notification) error {
 	query := `UPDATE public.notification SET event_id = :event_id, title = :title, 
               event_date_time = :event_date_time, user_id = :user_id 
@@ -130,14 +132,14 @@ func (s *Storage) UpdateNotification(ctx context.Context, notification *Notifica
 	return err
 }
 
-// DeleteNotification удаляет уведомление по его ID
+// DeleteNotification удаляет уведомление по его ID.
 func (s *Storage) DeleteNotification(ctx context.Context, id int64) error {
 	query := `DELETE FROM public.notification WHERE id = $1`
 	_, err := s.db.ExecContext(ctx, query, id)
 	return err
 }
 
-// GetAllNotifications возвращает все уведомления
+// GetAllNotifications возвращает все уведомления.
 func (s *Storage) GetAllNotifications(ctx context.Context) ([]Notification, error) {
 	var notifications []Notification
 	query := `SELECT * FROM public.notification`

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// middlewareLogger — middleware для логирования запросов
+// middlewareLogger — middleware для логирования запросов.
 func (s *Server) loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -32,7 +32,7 @@ func (s *Server) loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// responseWriterWrapper — обёртка для ResponseWriter
+// responseWriterWrapper — обёртка для ResponseWriter.
 type responseWriterWrapper struct {
 	http.ResponseWriter
 	statusCode int

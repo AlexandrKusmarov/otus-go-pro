@@ -3,11 +3,12 @@ package internalhttp
 import (
 	"context"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 type Server struct {
@@ -25,7 +26,7 @@ type Logger interface {
 }
 
 type Application interface {
-	//HandleRequest(w http.ResponseWriter, r *http.Request)
+	// HandleRequest(w http.ResponseWriter, r *http.Request)
 }
 
 // func NewServer(host string, port string, app Application, logger Logger) *Server {
@@ -47,7 +48,7 @@ func (s *Server) Start(ctx context.Context) error {
 	router.HandleFunc("/hello", s.HandleRequest)
 
 	// Настройка логирования
-	logFile, err := os.OpenFile("server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logFile, err := os.OpenFile("server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		s.logger.Error(fmt.Sprintf("Failed to open log file: %v", err))
 		return err
@@ -95,6 +96,7 @@ func (s *Server) Stop(ctx context.Context) error {
 }
 
 func (s *Server) HandleRequest(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r)
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintln(w, "Hello, World!")
 }

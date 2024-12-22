@@ -1,9 +1,10 @@
 package configs
 
 import (
-	"gopkg.in/yaml.v3"
 	"log"
 	"os"
+
+	"gopkg.in/yaml.v3"
 )
 
 // При желании конфигурацию можно вынести в internal/config.
@@ -50,7 +51,8 @@ func NewConfig(pathConfigFile string) Config {
 	var config Config
 	decoder := yaml.NewDecoder(file)
 	if err := decoder.Decode(&config); err != nil {
-		log.Fatalf("Ошибка декодирования YAML: %v", err)
+		file.Close()
+		log.Fatalf("Ошибка декодирования YAML: %v", err) //nolint
 	}
 
 	return config

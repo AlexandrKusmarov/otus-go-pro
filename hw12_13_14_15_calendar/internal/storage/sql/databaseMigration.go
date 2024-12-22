@@ -9,22 +9,23 @@ import (
 	"log"
 )
 
-func MigrateData(ctx context.Context, config configs.DatabaseConf) {
-
+func MigrateData(_ context.Context, config configs.DatabaseConf) error {
 	// Подключение к серверу базы данных (без указания конкретной базы данных)
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=%s",
 		config.Host, config.Port, config.Username, config.Password, config.Sslmode)
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatalf("Ошибка подключения к базе данных: %v", err)
+		log.Printf("Ошибка подключения к базе данных: %v", err)
+		return err
 	}
 	defer db.Close()
 
 	// Проверка и создание базы данных, если она не существует
 	_, err = db.Exec("CREATE DATABASE " + config.Database)
 	if err != nil && err.Error() != "pq: database \""+config.Database+"\" already exists" {
-		log.Fatalf("Ошибка при создании базы данных: %v", err)
+		log.Printf("Ошибка при создании базы данных: %v", err)
+		return err
 	}
 
 	// Теперь подключаемся к созданной базе данных
@@ -33,7 +34,8 @@ func MigrateData(ctx context.Context, config configs.DatabaseConf) {
 
 	db, err = sql.Open(config.DriverName, dsn)
 	if err != nil {
-		log.Fatalf("Ошибка подключения к базе данных: %v", err)
+		log.Printf("Ошибка подключения к базе данных: %v", err)
+		return err
 	}
 	defer db.Close()
 
@@ -41,8 +43,10 @@ func MigrateData(ctx context.Context, config configs.DatabaseConf) {
 	if !config.IsInMemoryStorage {
 		// Запустим миграцию
 		if err := goose.Up(db, config.MigrationPath); err != nil {
-			log.Fatalf("Ошибка при выполнении миграции: %v", err)
+			log.Printf("Ошибка при выполнении миграции: %v", err)
+			return err
 		}
 		fmt.Println("Миграция выполнена успешно.")
 	}
+	return nil
 }
