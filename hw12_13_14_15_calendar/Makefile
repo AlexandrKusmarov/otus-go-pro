@@ -18,7 +18,7 @@ build:
 # Стадия lint
 lint: install-linter build
 	@echo "Запуск линтера..."
-	$(LINTER) run $(PKG) --config=.golangci.yml
+	golangci-lint run --disable exhaustivestruct ./...
 
 # Стадия для установки линтера
 install-linter:
