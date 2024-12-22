@@ -15,7 +15,7 @@ lint:
 	@echo "Установка линтера..."
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	@echo "Запуск линтера..."
-	$(LINTER) run $(PKG) --config=$(LINTER_CONFIG)
+	golangci-lint run
 
 # Стадия для установки линтера (если необходимо)
 install-linter:
