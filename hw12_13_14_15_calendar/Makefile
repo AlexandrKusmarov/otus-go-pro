@@ -18,7 +18,7 @@ build:
 # Стадия lint
 lint: install-linter build
 	@echo "Запуск линтера..."
-	$(LINTER) run $(PKG) --config=$(LINTER_CONFIG)
+	$(LINTER) run $(PKG) --config=.golangci.yml
 
 # Стадия для установки линтера
 install-linter:
