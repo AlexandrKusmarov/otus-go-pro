@@ -3,7 +3,7 @@
 # Переменные
 PKG = ./...
 LINTER = golangci-lint
-LINTER_CONFIG = .golangci.yml
+LINTER_CONFIG = ../golangci.yml
 
 # Стадии
 .PHONY: all lint install-linter clean
