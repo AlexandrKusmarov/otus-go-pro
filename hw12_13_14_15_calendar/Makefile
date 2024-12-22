@@ -12,6 +12,8 @@ all: lint
 
 # Стадия lint
 lint:
+	@echo "Установка линтера..."
+	go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	@echo "Запуск линтера..."
 	$(LINTER) run $(PKG) --config=$(LINTER_CONFIG)
 
