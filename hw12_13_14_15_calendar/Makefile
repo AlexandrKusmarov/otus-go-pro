@@ -1,34 +1,36 @@
-BIN := "./bin/calendar"
-DOCKER_IMG="calendar:develop"
+# Makefile
 
-GIT_HASH := $(shell git log --format="%h" -n 1)
-LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
+# Переменные
+PKG = ./...
+LINTER = golangci-lint
+LINTER_CONFIG = ../.golangci.yml
 
+# Стадии
+.PHONY: all lint install-linter clean build
+
+all: lint
+
+# Стадия сборки
 build:
-	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd/calendar
+	@echo "Сборка проекта..."
+	go build ./...
 
-run: build
-	$(BIN) -config ./configs/config.toml
+# Стадия lint
+lint: install-linter build
+	@echo "Запуск линтера..."
+	golangci-lint run --disable exhaustivestruct ./...
 
-build-img:
-	docker build \
-		--build-arg=LDFLAGS="$(LDFLAGS)" \
-		-t $(DOCKER_IMG) \
-		-f build/Dockerfile .
+# Стадия для установки линтера
+install-linter:
+	@echo "Проверка установки golangci-lint..."
+	@if ! command -v $(LINTER) &> /dev/null; then \
+		echo "golangci-lint не найден. Установка..."; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.51.2; \
+	else \
+		echo "golangci-lint уже установлен."; \
+	fi
 
-run-img: build-img
-	docker run $(DOCKER_IMG)
-
-version: build
-	$(BIN) version
-
-test:
-	go test -race ./internal/... ./pkg/...
-
-install-lint-deps:
-	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.57.2
-
-lint: install-lint-deps
-	golangci-lint run ./...
-
-.PHONY: build run build-img run-img version test lint
+# Стадия для очистки (если нужно)
+clean:
+	@echo "Очистка..."
+	# Здесь можно добавить команды для очистки, если это необходимо

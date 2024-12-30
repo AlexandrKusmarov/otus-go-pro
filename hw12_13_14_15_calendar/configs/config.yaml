@@ -1,0 +1,18 @@
+database:
+  driver: "postgres"
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "calendar_db"
+  sslmode: "disable" # или "require", в зависимости от требований
+  isInMemoryStorage: false
+  migrationPath: "migrations"
+
+server:
+  host: "localhost"
+  port: 8081
+
+logger:
+  enabled: true
+  level: "info"

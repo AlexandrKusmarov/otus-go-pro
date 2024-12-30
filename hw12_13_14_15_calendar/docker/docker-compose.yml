@@ -1,0 +1,10 @@
+services:
+  postgres-golang-learning:
+    image: postgres:13.18
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
