@@ -9,12 +9,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/configs"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/app"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/server/http"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/common"
-	sqlstorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/sql"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/configs"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/app"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/logger"
+	internalhttp "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/server/http"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/common"
+	sqlstorage "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/sql"
 )
 
 var configFile string
@@ -26,10 +26,10 @@ func init() {
 func main() {
 	flag.Parse()
 
-	if flag.Arg(0) == "version" {
-		printVersion()
-		return
-	}
+	//if flag.Arg(0) == "version" {
+	//	printVersion()
+	//	return
+	//}
 
 	config := configs.NewConfig(configFile)
 	logg := logger.New(config.Logger.IsEnabled, config.Logger.Level, "")

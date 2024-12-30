@@ -3,8 +3,8 @@ package memorystorage
 import (
 	"testing"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/model/event"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/model/scheduler"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/scheduler"
 )
 
 func TestStorage(t *testing.T) {

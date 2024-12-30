@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/model/event"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/model/scheduler"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/scheduler"
 )
 
 type Storage struct {
@@ -31,16 +31,16 @@ func New() *Storage {
 }
 
 // GetEvent возвращает событие по его ID.
-func (s *Storage) GetEventByID(id int64) (*event.Event, bool) {
+func (s *Storage) GetEvent(_ context.Context, id int64) (*event.Event, error) {
 	s.mu.RLock() // Чтение блокировки
 	defer s.mu.RUnlock()
 
-	event, exists := s.events[id]
-	return event, exists
+	event := s.events[id]
+	return event, nil
 }
 
 // GetAllEvents возвращает все события.
-func (s *Storage) GetAllEvents() map[int64]*event.Event {
+func (s *Storage) GetAllEvents(_ context.Context) ([]event.Event, error) {
 	s.mu.RLock() // Чтение блокировки
 	defer s.mu.RUnlock()
 
@@ -49,7 +49,13 @@ func (s *Storage) GetAllEvents() map[int64]*event.Event {
 	for id, event := range s.events {
 		eventsCopy[id] = event
 	}
-	return eventsCopy
+
+	var values []event.Event
+	for _, event := range eventsCopy {
+		values = append(values, *event)
+	}
+
+	return values, nil
 }
 
 // GetNotification возвращает уведомление по его ID.
@@ -75,19 +81,30 @@ func (s *Storage) GetAllNotifications() map[int64]*scheduler.Notification {
 }
 
 // AddEvent добавляет или обновляет событие по его ID.
-func (s *Storage) AddEvent(id int64, event *event.Event) {
+func (s *Storage) CreateEvent(_ context.Context, event *event.Event) error {
 	s.mu.Lock() // Запись блокировки
 	defer s.mu.Unlock()
 
-	s.events[id] = event
+	s.events[event.ID] = event
+	return nil
 }
 
 // RemoveEvent удаляет событие по его ID.
-func (s *Storage) RemoveEvent(id int64) {
+func (s *Storage) DeleteEvent(_ context.Context, id int64) error {
 	s.mu.Lock() // Запись блокировки
 	defer s.mu.Unlock()
 
 	delete(s.events, id)
+	return nil
+}
+
+func (s *Storage) UpdateEvent(_ context.Context, event *event.Event) error {
+	s.mu.Lock() // Запись блокировки
+	defer s.mu.Unlock()
+
+	s.events[event.ID] = event
+
+	return nil
 }
 
 // AddNotification добавляет или обновляет уведомление по его ID.
