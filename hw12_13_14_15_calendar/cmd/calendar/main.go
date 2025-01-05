@@ -4,8 +4,15 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/server/grpc_local"
+	eventpb "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/server/grpc_local/pb"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -18,6 +25,7 @@ import (
 )
 
 var configFile string
+var wg sync.WaitGroup
 
 func init() {
 	flag.StringVar(&configFile, "config", "/configs/config.yaml", "Path to configuration file")
@@ -68,6 +76,40 @@ func main() {
 
 	server := internalhttp.NewServer(config.ServerConf.Host, config.ServerConf.Port, calendar, logg)
 
+	wg.Add(2)
+
+	// Инициализация gRPC-сервера.
+	lis, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+
+	eventService := grpc_local.NewGrpcServer(&storage)
+	eventpb.RegisterEventServiceServer(s, eventService)
+	reflection.Register(s)
+
+	// Горутина для остановки gRPC сервера.
+	go func() {
+		<-ctx.Done()
+
+		_, cancel := context.WithTimeout(ctx, time.Second*3)
+		defer cancel()
+
+		s.GracefulStop() // Корректная остановка gRPC сервера
+		log.Println("gRPC server stopped gracefully")
+	}()
+
+	log.Println("gRPC server is running on port :50051")
+
+	// Запуск gRPC сервера в горутине.
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
+
 	go func() {
 		<-ctx.Done()
 
@@ -86,4 +128,8 @@ func main() {
 		cancel()
 		os.Exit(1)
 	}
+
+	// Блокировка основного потока, чтобы программа не завершилась немедленно.
+	//select {}
+
 }

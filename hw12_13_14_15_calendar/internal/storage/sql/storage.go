@@ -36,16 +36,6 @@ func (s *Storage) Close(_ context.Context) error {
 	return nil
 }
 
-//type Event struct {
-//	ID                int64  `db:"id"`
-//	Title             string `db:"title"`
-//	EventDateTime     string `db:"event_date_time"` // Используйте time.Time для работы с временем
-//	EventEndDateTime  string `db:"event_end_date_time"`
-//	Description       string `db:"description"`
-//	UserID            int64  `db:"user_id"`
-//	NotifyBeforeEvent string `db:"notify_before_event"`
-//}
-
 // Notification представляет структуру уведомления.
 type Notification struct {
 	ID            int64  `db:"id"`

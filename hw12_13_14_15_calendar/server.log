@@ -32,3 +32,8 @@
 2024/12/30 16:31:35 127.0.0.1:53685 [30/Dec/2024:16:31:26 +0300] PUT /event/update/1 HTTP/1.1 400 9469 "PostmanRuntime/7.43.0"
 2024/12/30 16:37:10 127.0.0.1:53717 [30/Dec/2024:16:36:55 +0300] PUT /event/update/1 HTTP/1.1 200 14616 "PostmanRuntime/7.43.0"
 2024/12/30 16:39:36 127.0.0.1:53742 [30/Dec/2024:16:39:36 +0300] DELETE /event/delete/1 HTTP/1.1 204 9 "PostmanRuntime/7.43.0"
+2025/01/03 15:09:02 127.0.0.1:58711 [03/Jan/2025:15:09:02 +0300] POST /event/create HTTP/1.1 201 34 "PostmanRuntime/7.43.0"
+2025/01/03 15:09:07 127.0.0.1:58711 [03/Jan/2025:15:09:07 +0300] GET /event/events HTTP/1.1 200 0 "PostmanRuntime/7.43.0"
+2025/01/03 15:20:40 gRPC server stopped gracefully
+2025/01/03 15:37:35 gRPC server stopped gracefully
+2025/01/03 16:25:22 gRPC server stopped gracefully
