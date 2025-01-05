@@ -43,7 +43,7 @@ generate:
 # Стадия lint
 lint: install-linter build
 	@echo "Запуск линтера..."
-	golangci-lint run --disable exhaustivestruct ./...
+	golangci-lint run ./...
 
 # Стадия для установки линтера
 install-linter:
