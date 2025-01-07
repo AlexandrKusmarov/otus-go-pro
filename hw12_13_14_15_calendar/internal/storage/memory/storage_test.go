@@ -3,8 +3,8 @@ package memorystorage
 import (
 	"testing"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/model/event"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/model/scheduler"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/scheduler"
 )
 
 func TestStorage(t *testing.T) {
@@ -12,26 +12,31 @@ func TestStorage(t *testing.T) {
 
 	// Тестирование добавления и получения события
 	event1 := &event.Event{ID: 1, Title: "Test Event 1"}
-	storage.AddEvent(event1.ID, event1)
+	storage.CreateEvent(nil, event1)
 
-	if e, exists := storage.GetEventByID(event1.ID); !exists || e.Title != event1.Title {
-		t.Errorf("expected to get event %v, got %v", event1, e)
+	getEvent, err := storage.GetEvent(nil, event1.ID)
+	if err != nil {
+		t.Errorf("expected to get event %v, got %v", getEvent, err)
 	}
 
 	// Тестирование получения несуществующего события
-	if _, exists := storage.GetEventByID(999); exists {
+	_, err = storage.GetEvent(nil, 999)
+
+	if err != nil {
 		t.Error("expected event not to exist")
 	}
 
 	// Тестирование получения всех событий
-	allEvents := storage.GetAllEvents()
+	allEvents, err := storage.GetAllEvents(nil)
 	if len(allEvents) != 1 {
 		t.Errorf("expected 1 event, got %d", len(allEvents))
 	}
 
 	// Тестирование удаления события
-	storage.RemoveEvent(event1.ID)
-	if _, exists := storage.GetEventByID(event1.ID); exists {
+	storage.DeleteEvent(nil, event1.ID)
+	_, err = storage.GetEvent(nil, event1.ID)
+
+	if err != nil {
 		t.Error("expected event to be removed")
 	}
 

@@ -3,6 +3,7 @@ package internalhttp
 import (
 	"context"
 	"fmt"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
 	"log"
 	"net/http"
 	"os"
@@ -26,7 +27,11 @@ type Logger interface {
 }
 
 type Application interface {
-	// HandleRequest(w http.ResponseWriter, r *http.Request)
+	CreateEvent(ctx context.Context, event *event.Event) error
+	GetEvent(ctx context.Context, id int64) (*event.Event, error)
+	UpdateEvent(ctx context.Context, event *event.Event) error
+	DeleteEvent(ctx context.Context, id int64) error
+	GetAllEvents(ctx context.Context) ([]event.Event, error)
 }
 
 // func NewServer(host string, port string, app Application, logger Logger) *Server {
@@ -44,8 +49,13 @@ func (s *Server) Start(ctx context.Context) error {
 	// Создаём маршрутизатор
 	router := mux.NewRouter()
 
-	// Регистрация маршрута /hello
+	// Регистрация маршрутов
 	router.HandleFunc("/hello", s.HandleRequest)
+	router.HandleFunc("/event/get-event/{eventId}", s.getEventHandler).Methods(http.MethodGet)
+	router.HandleFunc("/event/create", s.createEventHandler).Methods(http.MethodPost)
+	router.HandleFunc("/event/update/{eventId}", s.updateEventHandler).Methods(http.MethodPut)
+	router.HandleFunc("/event/delete/{eventId}", s.deleteEventHandler).Methods(http.MethodDelete)
+	router.HandleFunc("/event/events", s.getAllEventsHandler).Methods(http.MethodGet)
 
 	// Настройка логирования
 	logFile, err := os.OpenFile("server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)

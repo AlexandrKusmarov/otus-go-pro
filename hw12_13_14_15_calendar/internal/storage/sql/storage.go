@@ -3,6 +3,7 @@ package sqlstorage
 import (
 	"context"
 	"fmt"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // Импорт PostgreSQL-драйвера
@@ -35,16 +36,6 @@ func (s *Storage) Close(_ context.Context) error {
 	return nil
 }
 
-type Event struct {
-	ID                int64  `db:"id"`
-	Title             string `db:"title"`
-	EventDateTime     string `db:"event_date_time"` // Используйте time.Time для работы с временем
-	EventEndDateTime  string `db:"event_end_date_time"`
-	Description       string `db:"description"`
-	UserID            int64  `db:"user_id"`
-	NotifyBeforeEvent string `db:"notify_before_event"`
-}
-
 // Notification представляет структуру уведомления.
 type Notification struct {
 	ID            int64  `db:"id"`
@@ -55,17 +46,19 @@ type Notification struct {
 }
 
 // CreateEvent добавляет новое событие в базу данных.
-func (s *Storage) CreateEvent(ctx context.Context, event *Event) error {
+func (s *Storage) CreateEvent(ctx context.Context, event *event.Event) error {
 	query := `INSERT INTO public.events 
     (title, event_date_time, event_end_date_time, description, user_id, notify_before_event) 
     VALUES (:title, :event_date_time, :event_end_date_time, :description, :user_id, :notify_before_event) RETURNING id`
 
-	return s.db.GetContext(ctx, &event.ID, query, event)
+	_, err := s.db.NamedExecContext(ctx, query, event)
+
+	return err
 }
 
 // GetEvent возвращает событие по его ID.
-func (s *Storage) GetEvent(ctx context.Context, id int64) (*Event, error) {
-	var event Event
+func (s *Storage) GetEvent(ctx context.Context, id int64) (*event.Event, error) {
+	var event event.Event
 	query := `SELECT * FROM public.events WHERE id = $1`
 
 	if err := s.db.GetContext(ctx, &event, query, id); err != nil {
@@ -75,7 +68,7 @@ func (s *Storage) GetEvent(ctx context.Context, id int64) (*Event, error) {
 }
 
 // UpdateEvent обновляет существующее событие.
-func (s *Storage) UpdateEvent(ctx context.Context, event *Event) error {
+func (s *Storage) UpdateEvent(ctx context.Context, event *event.Event) error {
 	query := `UPDATE public.events SET title = :title, event_date_time = :event_date_time, 
               event_end_date_time = :event_end_date_time, description = :description, 
               user_id = :user_id, notify_before_event = :notify_before_event 
@@ -93,8 +86,8 @@ func (s *Storage) DeleteEvent(ctx context.Context, id int64) error {
 }
 
 // GetAllEvents возвращает все события.
-func (s *Storage) GetAllEvents(ctx context.Context) ([]Event, error) {
-	var events []Event
+func (s *Storage) GetAllEvents(ctx context.Context) ([]event.Event, error) {
+	var events []event.Event
 	query := `SELECT * FROM public.events`
 
 	if err := s.db.SelectContext(ctx, &events, query); err != nil {

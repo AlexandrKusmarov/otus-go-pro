@@ -2,9 +2,9 @@ package common
 
 import (
 	"context"
-
-	memorystorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/memory"
-	sqlstorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/sql"
+	memorystorage "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/memory"
+	sqlstorage "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/sql"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
 )
 
 // StorageInterface определяет общие методы для хранилищ.
@@ -12,6 +12,11 @@ import (
 type StorageInterface interface {
 	Connect(ctx context.Context, driverName string, dsn string) error
 	Close(ctx context.Context) error
+	CreateEvent(ctx context.Context, event *event.Event) error
+	GetEvent(ctx context.Context, id int64) (*event.Event, error)
+	UpdateEvent(ctx context.Context, event *event.Event) error
+	DeleteEvent(ctx context.Context, id int64) error
+	GetAllEvents(ctx context.Context) ([]event.Event, error)
 }
 
 // Фабрика для создания хранилища.

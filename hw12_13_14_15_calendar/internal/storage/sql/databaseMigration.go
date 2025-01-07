@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/configs"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/configs"
 	"github.com/pressly/goose/v3"
 )
 

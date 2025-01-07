@@ -6,7 +6,7 @@ LINTER = golangci-lint
 LINTER_CONFIG = ../.golangci.yml
 
 # Стадии
-.PHONY: all lint install-linter clean build
+.PHONY: all lint install-linter clean build generate
 
 all: lint
 
@@ -15,10 +15,35 @@ build:
 	@echo "Сборка проекта..."
 	go build ./...
 
+# ДЛЯ WINDOWS
+#generate:
+#	@if exist internal/server/grpc/pb ( \
+#		echo "Удаление старой директории..."; \
+#		rmdir /s /q internal/server/grpc/pb \
+#	)
+#	@echo "Создание новой директории..."
+#	mkdir internal/server/grpc/pb
+#	protoc \
+#        --proto_path=internal/server/grpc/proto \
+#        --go_out=internal/server/grpc/pb \
+#        --go-grpc_out=internal/server/grpc/pb \
+#        internal/server/grpc/proto/*.proto
+
+# Стадия генерации кода gRPC для LINUX
+generate:
+	rm -rf internal/server/grpc/pb
+	mkdir -p internal/server/grpc/pb
+
+	protoc \
+        --proto_path=internal/server/grpc/proto \
+        --go_out=internal/server/grpc/pb \
+        --go-grpc_out=internal/server/grpc/pb \
+        internal/server/grpc/proto/*.proto
+
 # Стадия lint
 lint: install-linter build
 	@echo "Запуск линтера..."
-	golangci-lint run --disable exhaustivestruct ./...
+	golangci-lint run ./...
 
 # Стадия для установки линтера
 install-linter:
