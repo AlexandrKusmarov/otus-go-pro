@@ -1,0 +1,38 @@
+database:
+  driver: "postgres"
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "calendar_db"
+  sslmode: "disable" # или "require", в зависимости от требований
+  isInMemoryStorage: false
+  migrationPath: "migrations"
+
+server:
+  host: "localhost"
+  port: 8081
+
+logger:
+  enabled: true
+  level: "info"
+
+rmq:
+  uri: "amqp://test:test@localhost:5672/"
+  reConnect:
+    maxElapsedTime: "1m"
+    initialInterval: "1s"
+    multiplier: 2
+    maxInterval: "15s"
+
+#queues:
+#  events:
+#    exchangeName: "events"
+#    exchangeType: "fanout"
+#    queueName: "notifications"
+#    bindingKey: ""
+
+consumer:
+  consumerTag: "calendar_notifications_sender"
+  qosPrefetchCount: 10
+  threads: 4

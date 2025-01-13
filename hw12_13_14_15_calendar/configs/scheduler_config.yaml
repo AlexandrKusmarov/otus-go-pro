@@ -9,14 +9,20 @@ database:
   isInMemoryStorage: false
   migrationPath: "migrations"
 
-server:
-  host: "localhost"
-  port: 8081
-
 logger:
   enabled: true
   level: "info"
 
-grpc:
-  host: "localhost"
-  port: "50051"
+rmq:
+  uri: "amqp://test:test@localhost:5672/"
+  reConnect:
+    maxElapsedTime: "1m"
+    initialInterval: "1s"
+    multiplier: 2
+    maxInterval: "15s"
+
+binding:
+  exchangeName: "events"
+  exchangeType: "fanout"
+  queueName: "notifications"
+  bindingKey: ""

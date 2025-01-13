@@ -8,6 +8,7 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.23.1
+	github.com/streadway/amqp v1.1.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/net v0.30.0
 	google.golang.org/grpc v1.62.1

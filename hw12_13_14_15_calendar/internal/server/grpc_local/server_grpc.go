@@ -79,3 +79,66 @@ func (s *GrpcServer) GetAllEvents(ctx context.Context, req *eventpb.GetAllEvents
 
 	return eventResp, nil
 }
+
+func (s *GrpcServer) GetAllEventsForDay(ctx context.Context, req *eventpb.GetAllEventsForDayRequest) (*eventpb.GetAllEventsForDayResponse, error) {
+	// Получаем все события за указанный день из хранилища
+	eventsFromDb, err := s.storage.GetAllEventsForDay(ctx, req.Day.AsTime())
+	if err != nil {
+		return nil, err
+	}
+
+	// Преобразуем события из формата хранилища в формат gRPC
+	var events []*eventpb.Event
+	for _, event := range eventsFromDb {
+		events = append(events, mapper.EventStorageToEventGrpc(&event))
+	}
+
+	// Формируем ответ
+	eventResp := &eventpb.GetAllEventsForDayResponse{
+		Events: events,
+	}
+
+	return eventResp, nil
+}
+
+func (s *GrpcServer) GetAllEventsForWeek(ctx context.Context, req *eventpb.GetAllEventsForWeekRequest) (*eventpb.GetAllEventsForWeekResponse, error) {
+	// Получаем все события за указанную неделю из хранилища
+	eventsFromDb, err := s.storage.GetAllEventsForWeek(ctx, req.Start.AsTime())
+	if err != nil {
+		return nil, err
+	}
+
+	// Преобразуем события из формата хранилища в формат gRPC
+	var events []*eventpb.Event
+	for _, event := range eventsFromDb {
+		events = append(events, mapper.EventStorageToEventGrpc(&event))
+	}
+
+	// Формируем ответ
+	eventResp := &eventpb.GetAllEventsForWeekResponse{
+		Events: events,
+	}
+
+	return eventResp, nil
+}
+
+func (s *GrpcServer) GetAllEventsForMonth(ctx context.Context, req *eventpb.GetAllEventsForMonthRequest) (*eventpb.GetAllEventsForMonthResponse, error) {
+	// Получаем все события за указанный месяц из хранилища
+	eventsFromDb, err := s.storage.GetAllEventsForMonth(ctx, req.Start.AsTime())
+	if err != nil {
+		return nil, err
+	}
+
+	// Преобразуем события из формата хранилища в формат gRPC
+	var events []*eventpb.Event
+	for _, event := range eventsFromDb {
+		events = append(events, mapper.EventStorageToEventGrpc(&event))
+	}
+
+	// Формируем ответ
+	eventResp := &eventpb.GetAllEventsForMonthResponse{
+		Events: events,
+	}
+
+	return eventResp, nil
+}

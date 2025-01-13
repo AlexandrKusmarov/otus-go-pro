@@ -4,13 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/config"
 	"log"
 
-	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/configs"
 	"github.com/pressly/goose/v3"
 )
 
-func MigrateData(_ context.Context, config configs.DatabaseConf) error {
+func MigrateData(_ context.Context, config config.DatabaseConf) error {
 	// Подключение к серверу базы данных (без указания конкретной базы данных)
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=%s",
 		config.Host, config.Port, config.Username, config.Password, config.Sslmode)

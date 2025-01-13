@@ -32,6 +32,9 @@ type Application interface {
 	UpdateEvent(ctx context.Context, event *event.Event) error
 	DeleteEvent(ctx context.Context, id int64) error
 	GetAllEvents(ctx context.Context) ([]event.Event, error)
+	GetAllEventsForDay(ctx context.Context, day time.Time) ([]event.Event, error)
+	GetAllEventsForWeek(ctx context.Context, startDayOfWeek time.Time) ([]event.Event, error)
+	GetAllEventsForMonth(ctx context.Context, startDayOfMonth time.Time) ([]event.Event, error)
 }
 
 // func NewServer(host string, port string, app Application, logger Logger) *Server {
@@ -56,6 +59,9 @@ func (s *Server) Start(ctx context.Context) error {
 	router.HandleFunc("/event/update/{eventId}", s.updateEventHandler).Methods(http.MethodPut)
 	router.HandleFunc("/event/delete/{eventId}", s.deleteEventHandler).Methods(http.MethodDelete)
 	router.HandleFunc("/event/events", s.getAllEventsHandler).Methods(http.MethodGet)
+	router.HandleFunc("/event/events/day/{day}", s.getAllEventsForDayHandler).Methods(http.MethodGet)
+	router.HandleFunc("/event/events/week/{week}", s.getAllEventsForWeekHandler).Methods(http.MethodGet)
+	router.HandleFunc("/event/events/month/{month}", s.getAllEventsForMonthHandler).Methods(http.MethodGet)
 
 	// Настройка логирования
 	logFile, err := os.OpenFile("server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)

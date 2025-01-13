@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/scheduler"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // Импорт PostgreSQL-драйвера
@@ -11,6 +13,45 @@ import (
 
 type Storage struct {
 	db *sqlx.DB
+}
+
+func (s *Storage) GetAllEventsForDay(ctx context.Context, day time.Time) ([]event.Event, error) {
+	var events []event.Event
+	startOfDay := day.Truncate(24 * time.Hour)
+	endOfDay := startOfDay.Add(24 * time.Hour)
+
+	//query := `SELECT * FROM public.events WHERE event_date_time >= $1 AND event_date_time < $2`
+	query := `SELECT * FROM public.events WHERE event_date_time >= $1 AND event_date_time < $2`
+	if err := s.db.SelectContext(ctx, &events, query, startOfDay, endOfDay); err != nil {
+		return nil, fmt.Errorf("failed to get events for day: %w", err)
+	}
+	return events, nil
+}
+
+func (s *Storage) GetAllEventsForWeek(ctx context.Context, startDayOfWeek time.Time) ([]event.Event, error) {
+	var events []event.Event
+	startOfWeek := startDayOfWeek.Truncate(24 * time.Hour)
+	endOfWeek := startOfWeek.Add(7 * 24 * time.Hour)
+
+	query := `SELECT * FROM public.events 
+              WHERE event_date_time >= $1 AND event_date_time < $2`
+	if err := s.db.SelectContext(ctx, &events, query, startOfWeek, endOfWeek); err != nil {
+		return nil, fmt.Errorf("failed to get events for week: %w", err)
+	}
+	return events, nil
+}
+
+func (s *Storage) GetAllEventsForMonth(ctx context.Context, startDayOfMonth time.Time) ([]event.Event, error) {
+	var events []event.Event
+	startOfMonth := time.Date(startDayOfMonth.Year(), startDayOfMonth.Month(), 1, 0, 0, 0, 0, startDayOfMonth.Location())
+	endOfMonth := startOfMonth.AddDate(0, 1, 0) // Переход к следующему месяцу
+
+	query := `SELECT * FROM public.events 
+              WHERE event_date_time >= $1 AND event_date_time < $2`
+	if err := s.db.SelectContext(ctx, &events, query, startOfMonth, endOfMonth); err != nil {
+		return nil, fmt.Errorf("failed to get events for month: %w", err)
+	}
+	return events, nil
 }
 
 func New() *Storage {
@@ -97,11 +138,16 @@ func (s *Storage) GetAllEvents(ctx context.Context) ([]event.Event, error) {
 }
 
 // CreateNotification добавляет новое уведомление в базу данных.
-func (s *Storage) CreateNotification(ctx context.Context, notification *Notification) error {
+func (s *Storage) CreateNotification(ctx context.Context, notification scheduler.Notification) (scheduler.Notification, error) {
 	query := `INSERT INTO public.notification (event_id, title, event_date_time, user_id) 
-              VALUES (:event_id, :title, :event_date_time, :user_id) RETURNING id`
+              VALUES (:event_id, :title, :event_date_time, :user_id)`
 
-	return s.db.GetContext(ctx, &notification.ID, query, notification)
+	_, err := s.db.ExecContext(ctx, query)
+	if err != nil {
+		return scheduler.Notification{}, err
+	}
+
+	return notification, nil
 }
 
 // GetNotification возвращает уведомление по его ID.

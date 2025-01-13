@@ -16,29 +16,29 @@ build:
 	go build ./...
 
 # ДЛЯ WINDOWS
-#generate:
-#	@if exist internal/server/grpc/pb ( \
+generate:
+#	@if exist internal/server/grpc_local/pb ( \
 #		echo "Удаление старой директории..."; \
-#		rmdir /s /q internal/server/grpc/pb \
+#		rmdir /s /q internal/server/grpc_local/pb \
 #	)
 #	@echo "Создание новой директории..."
-#	mkdir internal/server/grpc/pb
-#	protoc \
-#        --proto_path=internal/server/grpc/proto \
-#        --go_out=internal/server/grpc/pb \
-#        --go-grpc_out=internal/server/grpc/pb \
-#        internal/server/grpc/proto/*.proto
+#	mkdir internal/server/grpc_local/pb
+	protoc \
+        --proto_path=internal/server/grpc_local/proto \
+        --go_out=internal/server/grpc_local/pb \
+        --go-grpc_out=internal/server/grpc_local/pb \
+        internal/server/grpc_local/proto/*.proto
 
 # Стадия генерации кода gRPC для LINUX
-generate:
-	rm -rf internal/server/grpc/pb
-	mkdir -p internal/server/grpc/pb
-
-	protoc \
-        --proto_path=internal/server/grpc/proto \
-        --go_out=internal/server/grpc/pb \
-        --go-grpc_out=internal/server/grpc/pb \
-        internal/server/grpc/proto/*.proto
+#generate:
+#	rm -rf internal/server/grpc_local/pb
+#	mkdir -p internal/server/grpc_local/pb
+#
+#	protoc \
+#        --proto_path=internal/server/grpc_local/proto \
+#        --go_out=internal/server/grpc_local/pb \
+#        --go-grpc_out=internal/server/grpc_local/pb \
+#        internal/server/grpc_local/proto/*.proto
 
 # Стадия lint
 lint: install-linter build

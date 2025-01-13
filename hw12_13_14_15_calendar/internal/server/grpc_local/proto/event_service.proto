@@ -51,10 +51,38 @@ message GetAllEventsResponse {
   repeated Event events = 1;
 }
 
+// Новые сообщения для получения событий за день, неделю и месяц
+message GetAllEventsForDayRequest {
+  google.protobuf.Timestamp day = 1; // Дата для получения событий за день
+}
+
+message GetAllEventsForDayResponse {
+  repeated Event events = 1; // Список событий за день
+}
+
+message GetAllEventsForWeekRequest {
+  google.protobuf.Timestamp start = 1; // Начало недели
+}
+
+message GetAllEventsForWeekResponse {
+  repeated Event events = 1; // Список событий за неделю
+}
+
+message GetAllEventsForMonthRequest {
+  google.protobuf.Timestamp start = 1; // Начало месяца
+}
+
+message GetAllEventsForMonthResponse {
+  repeated Event events = 1; // Список событий за месяц
+}
+
 service EventService {
   rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
   rpc GetEvent(GetEventRequest) returns (GetEventResponse);
   rpc UpdateEvent(UpdateEventRequest) returns (UpdateEventResponse);
   rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse);
   rpc GetAllEvents(GetAllEventsRequest) returns (GetAllEventsResponse);
+  rpc GetAllEventsForDay(GetAllEventsForDayRequest) returns (GetAllEventsForDayResponse);
+  rpc GetAllEventsForWeek(GetAllEventsForWeekRequest) returns (GetAllEventsForWeekResponse);
+  rpc GetAllEventsForMonth(GetAllEventsForMonthRequest) returns (GetAllEventsForMonthResponse);
 }
