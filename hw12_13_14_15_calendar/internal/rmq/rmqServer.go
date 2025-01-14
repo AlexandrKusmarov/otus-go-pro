@@ -29,7 +29,7 @@ func NewRMQClient(url string) (*RMQClient, error) {
 }
 
 // Publish отправляет сообщение в очередь
-func (c *RMQClient) Publish(queueName string, body []byte) error {
+func (c *RMQClient) Publish(queueName string, exchange string, body []byte) error {
 	// Объявляем очередь
 	_, err := c.channel.QueueDeclare(
 		queueName, // имя очереди
@@ -45,12 +45,12 @@ func (c *RMQClient) Publish(queueName string, body []byte) error {
 
 	// Отправляем сообщение
 	err = c.channel.Publish(
-		"",        // exchange
+		exchange,  // exchange
 		queueName, // routing key (имя очереди)
 		false,     // mandatory
 		false,     // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
+			ContentType: "application/json",
 			Body:        body,
 		},
 	)
@@ -58,10 +58,10 @@ func (c *RMQClient) Publish(queueName string, body []byte) error {
 }
 
 // Consume начинает прослушивание очереди
-func (c *RMQClient) Consume(queueName string, handler func([]byte)) error {
+func (c *RMQClient) Consume(queueName string, exchange string, handler func([]byte)) error {
 	msgs, err := c.channel.Consume(
 		queueName, // имя очереди
-		"",        // consumer
+		exchange,  // consumer
 		true,      // auto-ack
 		false,     // exclusive
 		false,     // no-local

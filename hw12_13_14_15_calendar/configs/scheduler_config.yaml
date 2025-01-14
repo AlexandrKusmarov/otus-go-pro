@@ -13,6 +13,12 @@ logger:
   enabled: true
   level: "info"
 
+binding:
+  exchangeName: ""
+  exchangeType: "fanout"
+  queueName: "notifications"
+  bindingKey: ""
+
 rmq:
   uri: "amqp://test:test@localhost:5672/"
   reConnect:
@@ -20,9 +26,3 @@ rmq:
     initialInterval: "1s"
     multiplier: 2
     maxInterval: "15s"
-
-binding:
-  exchangeName: "events"
-  exchangeType: "fanout"
-  queueName: "notifications"
-  bindingKey: ""

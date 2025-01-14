@@ -1,4 +1,4 @@
-package calendar_sender
+package main
 
 import (
 	"context"
@@ -21,7 +21,7 @@ func init() {
 
 func main() {
 	flag.Parse()
-	ctx, cancel := context.WithCancel(context.TODO())
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	config := config.NewConfigSender(configFile)

@@ -23,23 +23,25 @@ type DatabaseConf struct {
 }
 
 type GRPCServerConf struct {
-	Host string `json:"host"`
-	Port string `json:"port"`
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
+}
+
+type ReConnect struct {
+	MaxElapsedTime  string  `yaml:"maxElapsedTime"`
+	InitialInterval string  `yaml:"initialInterval"`
+	Multiplier      float64 `yaml:"multiplier"`
+	MaxInterval     string  `yaml:"maxInterval"`
 }
 
 type RMQ struct {
-	URI       string `json:"uri"`
-	ReConnect struct {
-		MaxElapsedTime  string  `json:"maxElapsedTime"`
-		InitialInterval string  `json:"initialInterval"`
-		Multiplier      float64 `json:"multiplier"`
-		MaxInterval     string  `json:"maxInterval"`
-	}
+	URI       string    `yaml:"uri"`
+	ReConnect ReConnect `yaml:"reConnect"`
 }
 
 type Binding struct {
-	ExchangeName string `json:"exchangeName"`
-	ExchangeType string `json:"exchangeType"`
-	QueueName    string `json:"queueName"`
-	BindingKey   string `json:"bindingKey"` // Message routing rules
+	ExchangeName string `yaml:"exchangeName"`
+	ExchangeType string `yaml:"exchangeType"`
+	QueueName    string `yaml:"queueName"`
+	BindingKey   string `yaml:"bindingKey"` // Message routing rules
 }

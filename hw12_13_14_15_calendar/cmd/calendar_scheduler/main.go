@@ -1,4 +1,4 @@
-package calendar_scheduler
+package main
 
 import (
 	"context"
@@ -21,8 +21,7 @@ func init() {
 
 func main() {
 	flag.Parse()
-	ctx, cancel := context.WithCancel(context.TODO())
-	// ctx, cancel := context.WithTimeout(context.TODO(), time.Minute)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	config := config.NewConfigScheduler(configFile)

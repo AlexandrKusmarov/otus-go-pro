@@ -25,12 +25,11 @@ rmq:
     multiplier: 2
     maxInterval: "15s"
 
-#queues:
-#  events:
-#    exchangeName: "events"
-#    exchangeType: "fanout"
-#    queueName: "notifications"
-#    bindingKey: ""
+binding:
+  exchangeName: ""
+  exchangeType: "fanout"
+  queueName: "notifications"
+  bindingKey: ""
 
 consumer:
   consumerTag: "calendar_notifications_sender"

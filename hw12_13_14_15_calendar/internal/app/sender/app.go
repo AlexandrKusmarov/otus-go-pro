@@ -41,11 +41,12 @@ func NewSender(log logger.Log, storage common.StorageInterface, conf *config.Sen
 			return
 		}
 
+		// Отправляем сообщение из Rabbit пользователю.
 		log.Info("Сообщение обработано и отправлено пользователю")
 	}
 
 	// Подписываемся на очередь с обработчиком
-	if err := client.Consume(conf.Binding.QueueName, handler); err != nil {
+	if err := client.Consume(conf.Binding.QueueName, conf.Binding.ExchangeName, handler); err != nil {
 		log.Error("Ошибка подписки на очередь:", err)
 		return nil, err // Важно вернуть nil, если произошла ошибка
 	}
