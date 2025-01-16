@@ -7,11 +7,11 @@ import (
 )
 
 type SenderConfig struct {
-	Logger   LoggerConf   `yaml:"logger"`
-	Database DatabaseConf `yaml:"database"`
-	RMQ      RMQ          `yaml:"rmq"`
-	Binding  Binding      `yaml:"binding"`
-	// TODO Возможно что-то еще понадобится
+	Logger    LoggerConf   `yaml:"logger"`
+	Database  DatabaseConf `yaml:"database"`
+	RMQ       RMQ          `yaml:"rmq"`
+	Binding   Binding      `yaml:"binding"`
+	KafkaConf KafkaConf    `yaml:"kafka"`
 }
 
 func NewConfigSender(pathConfigFile string) SenderConfig {

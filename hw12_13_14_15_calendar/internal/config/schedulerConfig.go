@@ -7,10 +7,11 @@ import (
 )
 
 type SchedulerConfig struct {
-	Logger   LoggerConf   `yaml:"logger"`
-	Database DatabaseConf `yaml:"database"`
-	RMQ      RMQ          `yaml:"rmq"`
-	Binding  Binding      `yaml:"binding"`
+	Logger    LoggerConf   `yaml:"logger"`
+	Database  DatabaseConf `yaml:"database"`
+	RMQ       RMQ          `yaml:"rmq"`
+	KafkaConf KafkaConf    `yaml:"kafka"`
+	Binding   Binding      `yaml:"binding"`
 }
 
 func NewConfigScheduler(pathConfigFile string) SchedulerConfig {

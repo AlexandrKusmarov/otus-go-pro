@@ -31,7 +31,13 @@ binding:
   queueName: "notifications"
   bindingKey: ""
 
-consumer:
-  consumerTag: "calendar_notifications_sender"
-  qosPrefetchCount: 10
-  threads: 4
+kafka:
+  broker: "localhost:9092" # Адрес брокера Kafka
+  consumer:
+    groupID: "calendar_notifications_group" # ID группы для потребителей
+    topic: "notifications" # Топик, на который подписывается потребитель
+    autoOffsetReset: "earliest" # Параметр для управления смещением
+    maxPollRecords: 10 # Максимальное количество записей для выборки за один раз
+    threads: 4 # Количество потоков для обработки сообщений
+  producer:
+    topic: "notifications" # Топик, в который будет отправляться сообщение

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/config"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/kaf"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/logger"
-	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/rmq"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/common"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/scheduler"
 	"time"
@@ -28,24 +28,29 @@ func NewScheduler(log logger.Log, storage common.StorageInterface, ctx context.C
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// Инициализация rmq
-	client, err := rmq.NewRMQClient(conf.RMQ.URI)
+	//client, err := rmq.NewRMQClient(conf.RMQ.URI)
 
-	if err != nil {
-		log.Error("Ошибка создания подключения к Rabbit MQ, Error: ", err)
-	}
-	defer client.Close()
+	//Инициализация kafka
+	kaf.CreateTopic(conf.KafkaConf.Broker, conf.KafkaConf.Producer.Topic)
+
+	kafkaClient := kaf.NewKafkaClient(conf.KafkaConf.Broker, conf.KafkaConf.Producer.Topic)
+
+	//if err != nil {
+	//	log.Error("Ошибка создания подключения к Rabbit MQ, Error: ", err)
+	//}
+	//defer client.Close()
 
 	// Удаляет события, которые хранятся больше 1 года
 	go startDailyCleaner(log, ctx, storage)
 
-	go startEventPublisher(log, ctx, storage, *client, conf)
+	go startEventPublisher(log, ctx, storage, *kafkaClient, conf)
 
 	return &AppScheduler{storage: storage, cancel: cancel}, nil
 }
 
 // Функция для запуска горутины
-func startEventPublisher(log logger.Log, ctx context.Context, storage common.StorageInterface, client rmq.RMQClient, conf *config.SchedulerConfig) {
-	ticker := time.NewTicker(time.Second) // Тикер, который срабатывает раз в час
+func startEventPublisher(log logger.Log, ctx context.Context, storage common.StorageInterface, kafkaClient kaf.KafkaClient, conf *config.SchedulerConfig) {
+	ticker := time.NewTicker(5 * time.Second) // Тикер, который срабатывает раз в час
 	defer ticker.Stop()
 
 	for {
@@ -75,7 +80,13 @@ func startEventPublisher(log logger.Log, ctx context.Context, storage common.Sto
 
 					// Публикуем JSON notification
 					log.Info("Публикуем JSON:", string(jsonData))
-					client.Publish(conf.Binding.QueueName, conf.Binding.ExchangeName, jsonData)
+
+					err = kafkaClient.Publish("10", jsonData)
+
+					if err != nil {
+						log.Error("Ошибка публикации в kafka", err)
+						continue
+					}
 
 					// Обновляем описание события
 					event.Description = "Добавлено в очередь"
@@ -87,6 +98,7 @@ func startEventPublisher(log logger.Log, ctx context.Context, storage common.Sto
 			}
 		case <-ctx.Done():
 			log.Info("Горутина завершена.")
+			kafkaClient.Close()
 			return
 		}
 	}
@@ -112,7 +124,7 @@ func eventCleaner(log logger.Log, ctx context.Context, storage common.StorageInt
 	}
 }
 func startDailyCleaner(log logger.Log, ctx context.Context, storage common.StorageInterface) {
-	ticker := time.NewTicker(2 * time.Second) // Создаем тикер с интервалом 24 часа
+	ticker := time.NewTicker(5 * time.Second) // Создаем тикер с интервалом 24 часа
 	defer ticker.Stop()
 
 	// Запускаем сразу при старте
