@@ -124,7 +124,7 @@ func eventCleaner(log logger.Log, ctx context.Context, storage common.StorageInt
 	}
 }
 func startDailyCleaner(log logger.Log, ctx context.Context, storage common.StorageInterface) {
-	ticker := time.NewTicker(5 * time.Second) // Создаем тикер с интервалом 24 часа
+	ticker := time.NewTicker(24 * time.Hour) // Создаем тикер с интервалом 24 часа
 	defer ticker.Stop()
 
 	// Запускаем сразу при старте
