@@ -16,7 +16,7 @@ import (
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/configs/senderConfig.yaml", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "/configs/sender_config.yaml", "Path to configuration file")
 }
 
 func main() {
