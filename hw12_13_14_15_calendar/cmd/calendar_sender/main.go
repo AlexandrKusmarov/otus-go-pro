@@ -43,7 +43,7 @@ func main() {
 		}
 	}()
 
-	_, err = sender.NewSender(logg, storage, &config)
+	_, err = sender.NewSender(logg, storage, &config, ctx, cancel)
 	if err != nil {
 		logg.Error("failed to create senderApp: ", err)
 		return

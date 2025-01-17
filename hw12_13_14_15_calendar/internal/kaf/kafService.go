@@ -3,6 +3,7 @@ package kaf
 import (
 	"context"
 	"fmt"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/logger"
 	"github.com/segmentio/kafka-go"
 	"log"
 )
@@ -54,39 +55,14 @@ func (c *KafkaClient) Close() error {
 	return c.writer.Close()
 }
 
-// NewKafkaConsumer создает нового потребителя для Kafka
-//func NewKafkaConsumer(broker string, groupID string, topic string) (*KafkaClient, error) {
-//	// Создаем потребителя
-//	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-//		"bootstrap.servers": broker,
-//		"group.id":          groupID,
-//		"auto.offset.reset": "earliest",
-//	})
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	// Подписываемся на топик
-//	err = consumer.Subscribe(topic, nil)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return &KafkaClient{
-//		consumer: consumer,
-//	}, nil
-//}
-
-// Consume начинает прослушивание топика
-//func (c *KafkaClient) Consume(handler func([]byte)) {
-//	go func() {
-//		for {
-//			msg, err := c.consumer.ReadMessage(-1)
-//			if err == nil {
-//				handler(msg.Value)
-//			} else {
-//				log.Printf("Error while consuming message: %v", err)
-//			}
-//		}
-//	}()
-//}
+// Чтение из кафка
+func ConsumeMessage(log logger.Log, ctx context.Context, reader *kafka.Reader) (kafka.Message, error) {
+	fmt.Println("Ожидание сообщений...")
+	message, err := reader.ReadMessage(ctx)
+	if err != nil {
+		log.Error("Ошибка чтения сообщения: ", err)
+		return kafka.Message{}, err
+	}
+	log.Info("Получено сообщение: ", string(message.Value))
+	return message, nil
+}
