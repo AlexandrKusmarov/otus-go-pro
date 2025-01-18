@@ -1,4 +1,5 @@
 # Собираем в golang
+# docker buildx build -t calendar-app2 -f build/calendar/Dockerfile .      - сборка img севриса
 FROM golang:1.22.2 as build
 
 ENV BIN_FILE /opt/calendar/calendar-app2

@@ -21,7 +21,7 @@ services:
       - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      #      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
@@ -31,8 +31,8 @@ services:
       - kafka_data:/bitnami/kafka
     networks:
       - kafka
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
+  #    extra_hosts:
+  #      - "host.docker.internal:host-gateway"
   calendar:
     container_name: calendar-app
     image: calendar-app2
@@ -55,10 +55,10 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: calendar_db
       CONFIG_MIGRATION: /etc/migrations
-#      HTTP_HOST: "0.0.0.0"
-#      HTTP_PORT: 8080
-#      GRPC_HOST: "0.0.0.0"
-#      GRPC_PORT: 50051
+    #      HTTP_HOST: "0.0.0.0"
+    #      HTTP_PORT: 8080
+    #      GRPC_HOST: "0.0.0.0"
+    #      GRPC_PORT: 50051
     networks:
       - db
   calendar_scheduler:
@@ -77,7 +77,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: calendar_db
-#      RMQ_URI: "amqp://guest:guest@rabbit:5672/"
+    #      RMQ_URI: "amqp://guest:guest@rabbit:5672/"
     networks:
       - db
       - kafka
@@ -97,10 +97,27 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: calendar_db
-#      RMQ_URI: "amqp://guest:guest@rabbit:5672/"
+    #      RMQ_URI: "amqp://guest:guest@rabbit:5672/"
     networks:
       - db
       - kafka
+  integration-tests:
+    container_name: integration_tests
+    image: integration_tests
+    build:
+      context: .
+      dockerfile: ./integration_test/Dockerfile
+    depends_on:
+      - postgres
+      - calendar
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: calendar_db
+    networks:
+      - db
 
 volumes:
   kafka_data:

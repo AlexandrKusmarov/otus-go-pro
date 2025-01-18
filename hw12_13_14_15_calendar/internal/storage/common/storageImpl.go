@@ -23,6 +23,7 @@ type StorageInterface interface {
 	GetAllEventsForWeek(ctx context.Context, startDayOfWeek time.Time) ([]event.Event, error)
 	GetAllEventsForMonth(ctx context.Context, startDayOfMonth time.Time) ([]event.Event, error)
 	CreateNotification(ctx context.Context, notification scheduler.Notification) (scheduler.Notification, error)
+	DeleteNotificationByEventId(ctx context.Context, eventId int64) error
 }
 
 // Фабрика для создания хранилища.

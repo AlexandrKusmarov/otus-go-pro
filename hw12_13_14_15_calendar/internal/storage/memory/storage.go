@@ -16,6 +16,11 @@ type Storage struct {
 	mu            sync.RWMutex
 }
 
+func (s *Storage) DeleteNotificationByEventId(ctx context.Context, eventId int64) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *Storage) GetAllEventsForDay(_ context.Context, day time.Time) ([]event.Event, error) {
 	s.mu.RLock() // Чтение блокировки
 	defer s.mu.RUnlock()
