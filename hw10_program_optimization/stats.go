@@ -1,10 +1,10 @@
 package hw10programoptimization
 
 import (
-	"encoding/json"
+	"bufio"
 	"fmt"
+	"github.com/valyala/fastjson"
 	"io"
-	"regexp"
 	"strings"
 )
 
@@ -21,46 +21,48 @@ type User struct {
 type DomainStat map[string]int
 
 func GetDomainStat(r io.Reader, domain string) (DomainStat, error) {
-	u, err := getUsers(r)
+	domainStat, err := getDomainCount(r, domain)
 	if err != nil {
-		return nil, fmt.Errorf("get users error: %w", err)
+		return nil, fmt.Errorf("getDomainCount error: %w", err)
 	}
-	return countDomains(u, domain)
+	return domainStat, err
 }
 
-type users [100_000]User
-
-func getUsers(r io.Reader) (result users, err error) {
-	content, err := io.ReadAll(r)
-	if err != nil {
-		return
+func getDomainCount(r io.Reader, domain string) (result DomainStat, err error) {
+	var parser fastjson.Parser
+	finalResult := make(DomainStat)
+	if domain == "" {
+		return nil, nil
 	}
+	domain = strings.ToLower(domain)
 
-	lines := strings.Split(string(content), "\n")
-	for i, line := range lines {
-		var user User
-		if err = json.Unmarshal([]byte(line), &user); err != nil {
-			return
-		}
-		result[i] = user
-	}
-	return
-}
+	// Используем bufio для построчного чтения
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		line := scanner.Text()
 
-func countDomains(u users, domain string) (DomainStat, error) {
-	result := make(DomainStat)
-
-	for _, user := range u {
-		matched, err := regexp.Match("\\."+domain, []byte(user.Email))
+		// Парсим JSON
+		v, err := parser.Parse(line)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to parse JSON: %w", err)
 		}
 
-		if matched {
-			num := result[strings.ToLower(strings.SplitN(user.Email, "@", 2)[1])]
-			num++
-			result[strings.ToLower(strings.SplitN(user.Email, "@", 2)[1])] = num
+		// Получаем значение email
+		email := string(v.GetStringBytes("Email"))
+		atIndex := strings.LastIndex(email, "@")
+		if atIndex == -1 || atIndex == len(email)-1 {
+			continue // Пропускаем некорректные email
+		}
+
+		emailDomain := strings.ToLower(email[atIndex+1:]) // Получаем домен
+		if strings.HasSuffix(emailDomain, "."+domain) {
+			finalResult[emailDomain]++
 		}
 	}
-	return result, nil
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return finalResult, nil
 }
