@@ -4,6 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/app/calendar"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/config"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/server/grpc_local"
 	eventpb "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/server/grpc_local/pb"
 	"google.golang.org/grpc"
@@ -16,8 +18,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/configs"
-	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/app"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/server/http"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/common"
@@ -39,7 +39,7 @@ func main() {
 	//	return
 	//}
 
-	config := configs.NewConfig(configFile)
+	config := config.NewConfig(configFile)
 	logg := logger.New(config.Logger.IsEnabled, config.Logger.Level, "")
 
 	ctx, cancel := signal.NotifyContext(context.Background(),
@@ -72,14 +72,14 @@ func main() {
 		}
 	}()
 
-	calendar := app.New(logg, storage)
+	calendar := calendar.New(logg, storage)
 
 	server := internalhttp.NewServer(config.ServerConf.Host, config.ServerConf.Port, calendar, logg)
 
 	wg.Add(2)
 
 	// Инициализация gRPC-сервера.
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", config.GRPCServerConf.Host+":"+config.GRPCServerConf.Port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

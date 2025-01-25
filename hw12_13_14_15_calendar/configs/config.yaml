@@ -16,3 +16,7 @@ server:
 logger:
   enabled: true
   level: "info"
+
+grpc:
+  host: "localhost"
+  port: "50051"

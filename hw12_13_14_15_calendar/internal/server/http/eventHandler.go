@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func (s *Server) createEventHandler(w http.ResponseWriter, r *http.Request) {
@@ -113,4 +114,62 @@ func (s *Server) getEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(eventVar)
+}
+
+func (s *Server) getAllEventsForDayHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	dayStr := vars["day"] // Извлекаем параметр eventId из URL
+
+	day, err := time.Parse("2006-01-02", dayStr) // Парсим дату
+	if err != nil {
+		http.Error(w, "Invalid date format, expected YYYY-MM-DD", http.StatusBadRequest)
+		return
+	}
+
+	events, err := s.app.GetAllEventsForDay(r.Context(), day)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(events)
+}
+
+func (s *Server) getAllEventsForWeekHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	weekStr := vars["week"]                            // Извлекаем параметр eventId из URL
+	startDay, err := time.Parse("2006-01-02", weekStr) // Парсим дату
+	if err != nil {
+		http.Error(w, "Invalid date format, expected YYYY-MM-DD", http.StatusBadRequest)
+		return
+	}
+
+	events, err := s.app.GetAllEventsForWeek(r.Context(), startDay)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(events)
+}
+
+func (s *Server) getAllEventsForMonthHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	monthStr := vars["month"]                             // Извлекаем параметр eventId из URL
+	startMonth, err := time.Parse("2006-01-02", monthStr) // Парсим дату
+	if err != nil {
+		http.Error(w, "Invalid date format, expected YYYY-MM-DD", http.StatusBadRequest)
+		return
+	}
+
+	events, err := s.app.GetAllEventsForMonth(r.Context(), startMonth)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(events)
 }

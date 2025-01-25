@@ -5,6 +5,8 @@ import (
 	memorystorage "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/memory"
 	sqlstorage "github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/sql"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
+	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/scheduler"
+	"time"
 )
 
 // StorageInterface определяет общие методы для хранилищ.
@@ -17,6 +19,10 @@ type StorageInterface interface {
 	UpdateEvent(ctx context.Context, event *event.Event) error
 	DeleteEvent(ctx context.Context, id int64) error
 	GetAllEvents(ctx context.Context) ([]event.Event, error)
+	GetAllEventsForDay(ctx context.Context, day time.Time) ([]event.Event, error)
+	GetAllEventsForWeek(ctx context.Context, startDayOfWeek time.Time) ([]event.Event, error)
+	GetAllEventsForMonth(ctx context.Context, startDayOfMonth time.Time) ([]event.Event, error)
+	CreateNotification(ctx context.Context, notification scheduler.Notification) (scheduler.Notification, error)
 }
 
 // Фабрика для создания хранилища.

@@ -37,3 +37,52 @@
 2025/01/03 15:20:40 gRPC server stopped gracefully
 2025/01/03 15:37:35 gRPC server stopped gracefully
 2025/01/03 16:25:22 gRPC server stopped gracefully
+2025/01/07 16:25:56 gRPC server stopped gracefully
+2025/01/07 16:43:23 127.0.0.1:63012 [07/Jan/2025:16:43:23 +0300] GET /event/events HTTP/1.1 200 11 "PostmanRuntime/7.43.0"
+2025/01/07 16:45:45 127.0.0.1:63035 [07/Jan/2025:16:45:45 +0300] GET /event/events/day/2025-01-01 HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:46:11 127.0.0.1:63035 [07/Jan/2025:16:46:11 +0300] GET /event/events/day?day=2025-01-01 HTTP/1.1 404 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:46:23 127.0.0.1:63035 [07/Jan/2025:16:46:23 +0300] GET /event/events/day/%222025-01-01%22 HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:46:33 127.0.0.1:63035 [07/Jan/2025:16:46:33 +0300] GET /event/events/day/%222025%22 HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:46:37 127.0.0.1:63035 [07/Jan/2025:16:46:37 +0300] GET /event/events/day/2025 HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:47:12 127.0.0.1:63035 [07/Jan/2025:16:47:12 +0300] GET /event/events/day/0000-01-01T00:00:00Z HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:47:19 127.0.0.1:63035 [07/Jan/2025:16:47:19 +0300] GET /event/events/day/0000-01-01 HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:47:32 127.0.0.1:63035 [07/Jan/2025:16:47:32 +0300] GET /event/events/day/%7B0000-01-01%7D HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/07 16:49:19 gRPC server stopped gracefully
+2025/01/07 16:49:35 127.0.0.1:63068 [07/Jan/2025:16:49:35 +0300] GET /event/events/day/0000-01-01 HTTP/1.1 200 11 "PostmanRuntime/7.43.0"
+2025/01/07 16:49:56 127.0.0.1:63068 [07/Jan/2025:16:49:56 +0300] GET /event/events/day/0000-01-02 HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/07 16:50:00 127.0.0.1:63068 [07/Jan/2025:16:50:00 +0300] GET /event/events/day/0000-01-01 HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/07 16:51:38 gRPC server stopped gracefully
+2025/01/07 16:54:26 127.0.0.1:63087 [07/Jan/2025:16:52:07 +0300] GET /event/events/day/0000-01-01 HTTP/1.1 200 138899 "PostmanRuntime/7.43.0"
+2025/01/07 16:54:26 gRPC server stopped gracefully
+2025/01/07 17:05:20 127.0.0.1:63161 [07/Jan/2025:17:04:57 +0300] GET /event/events/day/0000-01-01 HTTP/1.1 500 23613 "PostmanRuntime/7.43.0"
+2025/01/07 17:05:23 gRPC server stopped gracefully
+2025/01/07 17:06:48 127.0.0.1:63180 [07/Jan/2025:17:06:19 +0300] GET /event/events/day/0000-01-01 HTTP/1.1 500 28996 "PostmanRuntime/7.43.0"
+2025/01/07 17:07:08 gRPC server stopped gracefully
+2025/01/07 17:08:37 127.0.0.1:63189 [07/Jan/2025:17:07:20 +0300] GET /event/events/day/0000-01-01 HTTP/1.1 200 76485 "PostmanRuntime/7.43.0"
+2025/01/07 17:14:42 127.0.0.1:63224 [07/Jan/2025:17:14:42 +0300] POST /event/create HTTP/1.1 201 45 "PostmanRuntime/7.43.0"
+2025/01/07 17:14:47 127.0.0.1:63224 [07/Jan/2025:17:14:47 +0300] GET /event/events HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/07 17:22:12 gRPC server stopped gracefully
+2025/01/13 13:16:53 gRPC server stopped gracefully
+2025/01/13 13:19:31 127.0.0.1:63198 [13/Jan/2025:13:19:31 +0300] POST /event/create HTTP/1.1 201 6 "PostmanRuntime/7.43.0"
+2025/01/13 13:19:41 127.0.0.1:63198 [13/Jan/2025:13:19:41 +0300] POST /event/create HTTP/1.1 201 6 "PostmanRuntime/7.43.0"
+2025/01/13 13:19:51 127.0.0.1:63198 [13/Jan/2025:13:19:51 +0300] POST /event/create HTTP/1.1 201 6 "PostmanRuntime/7.43.0"
+2025/01/13 13:20:03 127.0.0.1:63198 [13/Jan/2025:13:20:03 +0300] POST /event/create HTTP/1.1 201 8 "PostmanRuntime/7.43.0"
+2025/01/13 13:20:09 127.0.0.1:63198 [13/Jan/2025:13:20:09 +0300] GET /event/events HTTP/1.1 200 0 "PostmanRuntime/7.43.0"
+2025/01/13 13:21:20 127.0.0.1:63216 [13/Jan/2025:13:21:20 +0300] POST /event/create HTTP/1.1 201 4 "PostmanRuntime/7.43.0"
+2025/01/13 13:21:33 127.0.0.1:63216 [13/Jan/2025:13:21:33 +0300] POST /event/create HTTP/1.1 201 7 "PostmanRuntime/7.43.0"
+2025/01/13 13:21:46 127.0.0.1:63216 [13/Jan/2025:13:21:46 +0300] POST /event/create HTTP/1.1 201 39 "PostmanRuntime/7.43.0"
+2025/01/13 13:21:55 127.0.0.1:63216 [13/Jan/2025:13:21:55 +0300] POST /event/create HTTP/1.1 201 7 "PostmanRuntime/7.43.0"
+2025/01/13 13:22:00 127.0.0.1:63216 [13/Jan/2025:13:22:00 +0300] GET /event/events HTTP/1.1 200 1 "PostmanRuntime/7.43.0"
+2025/01/13 13:23:49 127.0.0.1:63240 [13/Jan/2025:13:23:49 +0300] GET /event/events/day/2025-01-02 HTTP/1.1 200 8 "PostmanRuntime/7.43.0"
+2025/01/13 13:24:31 127.0.0.1:63240 [13/Jan/2025:13:24:31 +0300] GET /event/events/day/2025-01-02 HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/13 13:24:45 127.0.0.1:63240 [13/Jan/2025:13:24:45 +0300] GET /event/events/day/2025-02-02 HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/13 13:25:13 127.0.0.1:63240 [13/Jan/2025:13:25:13 +0300] GET /event/events/week/2025-03-02 HTTP/1.1 400 0 "PostmanRuntime/7.43.0"
+2025/01/13 13:27:28 gRPC server stopped gracefully
+2025/01/13 13:27:38 127.0.0.1:63272 [13/Jan/2025:13:27:38 +0300] GET /event/events/week/2025-03-02 HTTP/1.1 200 3 "PostmanRuntime/7.43.0"
+2025/01/13 13:27:43 127.0.0.1:63272 [13/Jan/2025:13:27:43 +0300] GET /event/events/week/2025-02-02 HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/13 13:27:55 127.0.0.1:63272 [13/Jan/2025:13:27:55 +0300] GET /event/events/week/2025-01-02 HTTP/1.1 200 3 "PostmanRuntime/7.43.0"
+2025/01/13 13:28:57 127.0.0.1:63281 [13/Jan/2025:13:28:57 +0300] GET /event/events/month/2025-03-02 HTTP/1.1 200 1 "PostmanRuntime/7.43.0"
+2025/01/13 13:29:01 127.0.0.1:63281 [13/Jan/2025:13:29:01 +0300] GET /event/events/month/2025-02-02 HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/13 13:29:17 127.0.0.1:63281 [13/Jan/2025:13:29:17 +0300] POST /event/create HTTP/1.1 201 11 "PostmanRuntime/7.43.0"
+2025/01/13 13:29:32 127.0.0.1:63281 [13/Jan/2025:13:29:32 +0300] GET /event/events/month/2025-02-02 HTTP/1.1 200 2 "PostmanRuntime/7.43.0"
+2025/01/13 13:52:38 127.0.0.1:63448 [13/Jan/2025:13:52:34 +0300] POST /event/create HTTP/1.1 201 4157 "PostmanRuntime/7.43.0"

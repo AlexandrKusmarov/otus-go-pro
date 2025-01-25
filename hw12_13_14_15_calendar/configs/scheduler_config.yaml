@@ -1,0 +1,39 @@
+database:
+  driver: "postgres"
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "calendar_db"
+  sslmode: "disable" # или "require", в зависимости от требований
+  isInMemoryStorage: false
+  migrationPath: "migrations"
+
+logger:
+  enabled: true
+  level: "info"
+
+binding:
+  exchangeName: ""
+  exchangeType: "fanout"
+  queueName: "notifications"
+  bindingKey: ""
+
+rmq:
+  uri: "amqp://test:test@localhost:5672/"
+  reConnect:
+    maxElapsedTime: "1m"
+    initialInterval: "1s"
+    multiplier: 2
+    maxInterval: "15s"
+
+kafka:
+  broker: "host.docker.internal:9092" #"localhost:9092" "host.docker.internal:9092"
+  consumer:
+    groupID: "calendar_notifications_group" # ID группы для потребителей
+    topic: "test-notifications" # Топик, на который подписывается потребитель
+    autoOffsetReset: "earliest" # Параметр для управления смещением
+    maxPollRecords: 10 # Максимальное количество записей для выборки за один раз
+    threads: 4 # Количество потоков для обработки сообщений
+  producer:
+    topic: "test-notifications" # Топик, в который будет отправляться сообщение

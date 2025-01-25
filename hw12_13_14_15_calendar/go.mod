@@ -1,6 +1,6 @@
 module github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar
 
-go 1.22
+go 1.22.2
 
 require (
 	github.com/golang/protobuf v1.5.4
@@ -8,16 +8,20 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.23.1
+	github.com/segmentio/kafka-go v0.4.47
+	github.com/streadway/amqp v1.1.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/net v0.30.0
-	google.golang.org/grpc v1.62.1
+	google.golang.org/grpc v1.64.1
 	google.golang.org/protobuf v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/klauspost/compress v1.17.7 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
+	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect

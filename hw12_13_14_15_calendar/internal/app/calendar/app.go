@@ -1,10 +1,11 @@
-package app
+package calendar
 
 import (
 	"context"
 	"fmt"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/internal/storage/common"
 	"github.com/AlexandrKusmarov/otus-go-pro/hw12_13_14_15_calendar/model/event"
+	"time"
 )
 
 type App struct { // TODO
@@ -41,4 +42,16 @@ func (a *App) DeleteEvent(ctx context.Context, id int64) error {
 
 func (a *App) GetAllEvents(ctx context.Context) ([]event.Event, error) {
 	return a.storage.GetAllEvents(ctx)
+}
+
+func (a *App) GetAllEventsForDay(ctx context.Context, day time.Time) ([]event.Event, error) {
+	return a.storage.GetAllEventsForDay(ctx, day)
+}
+
+func (a *App) GetAllEventsForWeek(ctx context.Context, weekday time.Time) ([]event.Event, error) {
+	return a.storage.GetAllEventsForWeek(ctx, weekday)
+}
+
+func (a *App) GetAllEventsForMonth(ctx context.Context, month time.Time) ([]event.Event, error) {
+	return a.storage.GetAllEventsForMonth(ctx, month)
 }
