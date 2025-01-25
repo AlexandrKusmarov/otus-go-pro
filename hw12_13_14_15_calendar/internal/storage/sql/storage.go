@@ -15,6 +15,17 @@ type Storage struct {
 	db *sqlx.DB
 }
 
+func (s *Storage) DeleteNotificationByEventId(ctx context.Context, eventId int64) error {
+	query := `DELETE FROM public.notification WHERE event_id = $1`
+
+	// Выполняем запрос на удаление уведомления
+	if _, err := s.db.ExecContext(ctx, query, eventId); err != nil {
+		return fmt.Errorf("failed to delete notification by event ID: %w", err)
+	}
+
+	return nil
+}
+
 func (s *Storage) GetAllEventsForDay(ctx context.Context, day time.Time) ([]event.Event, error) {
 	var events []event.Event
 	startOfDay := day.Truncate(24 * time.Hour)
@@ -92,7 +103,15 @@ func (s *Storage) CreateEvent(ctx context.Context, event *event.Event) error {
     (title, event_date_time, event_end_date_time, description, user_id, notify_before_event) 
     VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
 
-	_, err := s.db.NamedExecContext(ctx, query, event)
+	// Здесь мы используем QueryRowContext для вставки и извлечения ID нового события.
+	err := s.db.QueryRowContext(ctx, query,
+		event.Title,
+		event.EventDateTime,
+		event.EventEndDateTime,
+		event.Description,
+		event.UserID,
+		event.NotifyBeforeEvent,
+	).Scan(&event.ID) // Сканируем ID, который возвращает база данных
 
 	return err
 }

@@ -13,12 +13,36 @@ all: lint
 # Запуск Docker Compose
 up:
 	@echo "Run Docker Compose..."
-	docker-compose -f ./docker/docker-compose.yml up
+	docker-compose -f ./docker-compose.yml up
 
 # Остановка Docker Compose
 down:
 	@echo "Stop Docker Compose..."
-	docker-compose -f ./docker/docker-compose.yml down
+	docker-compose -f ./docker-compose.yml down
+
+
+#LINUX
+#integration-tests:
+#	docker-compose -f ./docker-compose.integra.yml up --build -d
+#	test_status_code=0
+#	docker-compose -f docker-compose.integra.yml run integration_tests go test ./integration_test/calendar_test.go || test_status_code=$$?
+#	docker-compose -f docker-compose.integra.yml down
+#	echo $$test_status_code
+#	exit $$test_status_code
+# -- build
+
+build-integration-tests:
+	docker-compose -f .\docker-compose.integra.yml up
+	@echo "Waiting for starting services..."
+	sleep 30
+
+#Для WINDOWS
+integration-tests: build-integration-tests
+	set test_status_code=0
+	docker-compose -f .\docker-compose.integra.yml run integration_tests go test ./integration_test/calendar_test.go || set test_status_code=$$?
+	docker-compose -f .\docker-compose.integra.yml down
+	echo %test_status_code%
+	exit /b %test_status_code%
 
 # ДЛЯ WINDOWS
 generate:

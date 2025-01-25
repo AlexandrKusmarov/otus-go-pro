@@ -1,6 +1,7 @@
 database:
   driver: "postgres"
-  host: "localhost"
+  host: "postgres"
+#  host: "localhost"
   port: 5432
   user: "postgres"
   password: "postgres"
@@ -13,22 +14,23 @@ logger:
   enabled: true
   level: "info"
 
-binding:
-  exchangeName: ""
-  exchangeType: "fanout"
-  queueName: "notifications"
-  bindingKey: ""
-
-rmq:
-  uri: "amqp://test:test@localhost:5672/"
-  reConnect:
-    maxElapsedTime: "1m"
-    initialInterval: "1s"
-    multiplier: 2
-    maxInterval: "15s"
+#binding:
+#  exchangeName: ""
+#  exchangeType: "fanout"
+#  queueName: "notifications"
+#  bindingKey: ""
+#
+#rmq:
+#  uri: "amqp://test:test@localhost:5672/"
+#  reConnect:
+#    maxElapsedTime: "1m"
+#    initialInterval: "1s"
+#    multiplier: 2
+#    maxInterval: "15s"
 
 kafka:
-  broker: "host.docker.internal:9092" #"localhost:9092" "host.docker.internal:9092"
+  broker: "kafka:9092"
+#  broker: "host.docker.internal:9092" #"localhost:9092" "host.docker.internal:9092"
   consumer:
     groupID: "calendar_notifications_group" # ID группы для потребителей
     topic: "test-notifications" # Топик, на который подписывается потребитель

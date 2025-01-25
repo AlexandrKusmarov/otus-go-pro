@@ -44,7 +44,8 @@ func MigrateData(_ context.Context, config config.DatabaseConf) error {
 	if !config.IsInMemoryStorage {
 		// Запустим миграцию
 		if err := goose.Up(db, config.MigrationPath); err != nil {
-			log.Printf("Ошибка при выполнении миграции: %v", err)
+			log.Printf("Ошибка при выполнении миграции1111: %v", err)
+			log.Print("Путь к файлу: " + config.MigrationPath)
 			return err
 		}
 		fmt.Println("Миграция выполнена успешно.")

@@ -85,6 +85,7 @@ func startEventPublisher(log logger.Log, ctx context.Context, storage common.Sto
 
 					if err != nil {
 						log.Error("Ошибка публикации в kafka", err)
+						fmt.Printf("Ошибка публикации в kafka %v", err)
 						continue
 					}
 
