@@ -3,9 +3,10 @@ package hw10programoptimization
 import (
 	"bufio"
 	"fmt"
-	"github.com/valyala/fastjson"
 	"io"
 	"strings"
+
+	"github.com/valyala/fastjson"
 )
 
 type User struct {
